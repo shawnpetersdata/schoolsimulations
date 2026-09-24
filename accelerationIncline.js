@@ -418,7 +418,7 @@ function resetPressed() {
     rider = new Rider(sprite)
     gates = []
     elaspedTime = 0
-    for (let i = 0; i<1; i+=0.2) {
+    for (let i = 0; i<=1; i+=0.2) {
         gates.push(new Gate(i))   
     }
 
