@@ -6,6 +6,11 @@ let gates = []
 let startButton
 let resetButton
 
+let vSlider
+let vLabel
+let v = 0
+
+
 let sprite
 
 const g = 9.8
@@ -133,7 +138,7 @@ class Rider {
         this.velo =
             p5.Vector.fromAngle(this.angle)
 
-        this.velo.setMag(0)
+        this.velo.setMag(v * pixelsPerMeter)
 
         // Real acceleration down the incline
         // in m/s^2.
@@ -248,7 +253,7 @@ class EditPoint {
 
 async function setup() {
     let dim = min(
-        windowWidth,
+        windowWidth/2,
         windowHeight * 0.9
     )
 
@@ -256,7 +261,7 @@ async function setup() {
 
     scl = dim / DESIGN_SIZE
 
-    createCanvas(dim, dim)
+    createCanvas(dim*2, dim)
 
     startButton = createButton("start")
 
@@ -270,6 +275,13 @@ async function setup() {
         resetPressed
     )
 
+    let label = createP("Initial Velocity")
+    label.position(width/3,height-10)
+    vSlider = createSlider(0,10,0,1)
+    vSlider.input(setVelocity)
+    vSlider.position(width/3, height+20)
+    vLabel = createP("0")
+    vLabel.position(width/3, height+30)
     rectMode(CENTER)
     imageMode(CENTER)
 
@@ -367,7 +379,8 @@ function startPressed() {
 
 function resetPressed() {
     state = "setup"
-
+    vLabel.html(0)
+    vSlider.value(0)
     topPoint = new EditPoint(
         10 * scl,
         randomGaussian(0.5, 0.1) *
@@ -409,4 +422,11 @@ function resetPressed() {
         gates.push(new Gate(i))   
     }
 
+}
+
+function setVelocity() {
+    if (state === "setup") {
+        v = vSlider.value()
+        vLabel.html(v)
+    }
 }
