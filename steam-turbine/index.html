@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Interactive Steam Turbine Simulation</title>
+<style>
+:root{
+  --bg:#11151a;
+  --panel:#1b222a;
+  --text:#e7edf2;
+  --muted:#9fb0bf;
+  --accent:#d7923b;
+  --hot:#d85a3a;
+  --steam:#d9eef5;
+  --metal:#9aa4ad;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:linear-gradient(180deg,#0e1216,#151b21);
+  color:var(--text);
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+}
+.wrap{
+  max-width:1200px;
+  margin:0 auto;
+  padding:18px;
+}
+h1{
+  margin:0 0 4px;
+  font-size:clamp(1.5rem,3vw,2.3rem);
+}
+.sub{
+  color:var(--muted);
+  margin-bottom:14px;
+  line-height:1.5;
+}
+.grid{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 300px;
+  gap:14px;
+}
+.card{
+  background:rgba(27,34,42,.96);
+  border:1px solid #303a45;
+  border-radius:14px;
+}
+.simcard{padding:10px}
+canvas{
+  width:100%;
+  height:auto;
+  display:block;
+  border-radius:10px;
+  background:#0f151b;
+}
+.controls{padding:16px}
+.controls h2{
+  font-size:1.05rem;
+  margin:0 0 12px;
+}
+.control{margin:0 0 16px}
+.row{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  font-size:.94rem;
+  margin-bottom:5px;
+}
+input[type=range]{
+  width:100%;
+  accent-color:var(--accent);
+}
+.buttons{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+button{
+  border:1px solid #3c4854;
+  background:#28323c;
+  color:var(--text);
+  border-radius:9px;
+  padding:9px 10px;
+  cursor:pointer;
+  font-weight:600;
+}
+.readouts{
+  margin-top:14px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+.readout{
+  background:#151b21;
+  border:1px solid #303943;
+  border-radius:9px;
+  padding:9px;
+  min-height:68px;
+}
+.readout .v{
+  font-size:1.05rem;
+  font-weight:700;
+  white-space:nowrap;
+}
+.readout .k{
+  color:var(--muted);
+  font-size:.78rem;
+}
+.note{
+  margin-top:12px;
+  color:var(--muted);
+  font-size:.82rem;
+  line-height:1.4;
+}
+.legend{
+  padding:10px 14px 14px;
+  color:var(--muted);
+  font-size:.84rem;
+}
+@media(max-width:850px){
+  .grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Interactive Steam Turbine</h1>
+  <div class="sub">
+    Heat water in a boiler, control steam flow through a nozzle,
+    and observe how expanding steam transfers momentum directly
+    to turbine blades.
+  </div>
+
+  <div class="grid">
+    <div class="card simcard">
+      <canvas id="sim" width="900" height="560"></canvas>
+      <div class="legend">
+        Orange = heat &nbsp; • &nbsp;
+        Pale blue = steam &nbsp; • &nbsp;
+        Grey = turbine and shaft
+      </div>
+    </div>
+
+    <div class="card controls">
+      <h2>Controls</h2>
+
+      <div class="control">
+        <div class="row">
+          <span>Heat Input</span>
+          <strong id="heatVal">50%</strong>
+        </div>
+        <input id="heat" type="range"
+               min="0" max="100" value="50">
+      </div>
+
+      <div class="control">
+        <div class="row">
+          <span>Steam Valve</span>
+          <strong id="valveVal">30%</strong>
+        </div>
+        <input id="valve" type="range"
+               min="0" max="100" value="30">
+      </div>
+
+      <div class="control">
+        <div class="row">
+          <span>Mechanical Load</span>
+          <strong id="loadVal">20%</strong>
+        </div>
+        <input id="load" type="range"
+               min="0" max="100" value="20">
+      </div>
+
+      <div class="buttons">
+        <button id="pauseBtn">Pause</button>
+        <button id="resetBtn">Reset</button>
+      </div>
+
+      <div class="readouts">
+        <div class="readout">
+          <div class="v" id="pressureOut">70 kPa</div>
+          <div class="k">Boiler pressure</div>
+        </div>
+
+        <div class="readout">
+          <div class="v" id="rpmOut">0 rpm</div>
+          <div class="k">Turbine speed</div>
+        </div>
+
+        <div class="readout">
+          <div class="v" id="flowOut">0%</div>
+          <div class="k">Steam flow</div>
+        </div>
+
+        <div class="readout">
+          <div class="v" id="stateOut">Warming</div>
+          <div class="k">System state</div>
+        </div>
+      </div>
+
+      <div class="note">
+        This is a simplified teaching model. The boiler produces
+        high-pressure steam, the nozzle accelerates it into a jet,
+        and the jet changes direction across the turbine blades.
+        That momentum transfer produces shaft torque.
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById("sim");
+const ctx = canvas.getContext("2d");
+
+const heat = document.getElementById("heat");
+const valve = document.getElementById("valve");
+const load = document.getElementById("load");
+
+const heatVal = document.getElementById("heatVal");
+const valveVal = document.getElementById("valveVal");
+const loadVal = document.getElementById("loadVal");
+
+const pressureOut = document.getElementById("pressureOut");
+const rpmOut = document.getElementById("rpmOut");
+const flowOut = document.getElementById("flowOut");
+const stateOut = document.getElementById("stateOut");
+
+let running = true;
+let pressure = 70;
+let rpm = 0;
+let angle = 0;
+let simTime = 0;
+let safetyOpen = false;
+let steamParticles = [];
+
+function clamp(v,a,b){
+  return Math.max(a,Math.min(b,v));
+}
+
+function reset(){
+  pressure = 70;
+  rpm = 0;
+  angle = 0;
+  simTime = 0;
+  safetyOpen = false;
+  steamParticles = [];
+}
+
+document.getElementById("pauseBtn").onclick = () => {
+  running = !running;
+  document.getElementById("pauseBtn").textContent =
+    running ? "Pause" : "Resume";
+};
+
+document.getElementById("resetBtn").onclick = reset;
+
+function updateLabels(){
+  heatVal.textContent = heat.value + "%";
+  valveVal.textContent = valve.value + "%";
+  loadVal.textContent = load.value + "%";
+}
+
+[heat,valve,load].forEach(el=>{
+  el.addEventListener("input",updateLabels);
+});
+
+updateLabels();
+
+function physics(dt){
+  const h = Number(heat.value)/100;
+  const v = Number(valve.value)/100;
+  const l = Number(load.value)/100;
+
+  const generation = 30*h;
+  const standingLoss = 2.5 + pressure*0.012;
+
+  const flow =
+    v * clamp(pressure/240,0,1.2);
+
+  const steamUse = 32*flow;
+
+  // Safety-valve hysteresis prevents rapid flickering.
+  if(!safetyOpen && pressure >= 238){
+    safetyOpen = true;
+  }
+
+  if(safetyOpen && pressure <= 212){
+    safetyOpen = false;
+  }
+
+  const safetyFlow =
+    safetyOpen
+      ? clamp((pressure-190)/70,0.25,1.0)
+      : 0;
+
+  const safetyLoss =
+    26*safetyFlow;
+
+  pressure +=
+    (
+      generation
+      - standingLoss
+      - steamUse
+      - safetyLoss
+    )*dt;
+
+  pressure = clamp(pressure,0,270);
+
+  const flowStrength =
+    flow * clamp((pressure-10)/180,0,1.2);
+
+  const driveTorque =
+    80 * flowStrength;
+
+  const loadTorque =
+    8 + 52*l;
+
+  const dragTorque =
+    1.2 +
+    0.018*rpm +
+    0.00011*rpm*rpm;
+
+  let netTorque =
+    driveTorque-loadTorque-dragTorque;
+
+  if(rpm <= 0 && netTorque < 0){
+    netTorque = 0;
+  }
+
+  rpm += netTorque*2.1*dt;
+  rpm = clamp(rpm,0,720);
+
+  angle += rpm*Math.PI*2/60*dt;
+  simTime += dt;
+
+  const particleRate =
+    20 * flowStrength;
+
+  if(Math.random() < particleRate*dt){
+    steamParticles.push({
+      x:455,
+      y:267 + (Math.random()-.5)*10,
+      vx:150 + 180*flowStrength,
+      vy:(Math.random()-.5)*16,
+      life:1
+    });
+  }
+
+  for(const p of steamParticles){
+    p.x += p.vx*dt;
+    p.y += p.vy*dt;
+    p.life -= .9*dt;
+  }
+
+  steamParticles =
+    steamParticles.filter(p=>p.life>0);
+
+  pressureOut.textContent =
+    Math.round(pressure) + " kPa";
+
+  rpmOut.textContent =
+    Math.round(rpm) + " rpm";
+
+  flowOut.textContent =
+    Math.round(flow*100) + "%";
+
+  let state = "Warming";
+
+  if(safetyOpen){
+    state = "Safety valve";
+  }
+  else if(pressure < 30){
+    state = "Low steam";
+  }
+  else if(v < .05){
+    state = "Valve closed";
+  }
+  else if(rpm < 30){
+    state = "Starting";
+  }
+  else if(rpm < 140){
+    state = "Turning slowly";
+  }
+  else{
+    state = "Running";
+  }
+
+  stateOut.textContent = state;
+}
+
+function roundRect(x,y,w,h,r,fill,stroke){
+  ctx.beginPath();
+  ctx.roundRect(x,y,w,h,r);
+
+  if(fill){
+    ctx.fillStyle=fill;
+    ctx.fill();
+  }
+
+  if(stroke){
+    ctx.strokeStyle=stroke;
+    ctx.lineWidth=2;
+    ctx.stroke();
+  }
+}
+
+function label(text,x,y,size=14,
+               color="#dbe4ea",
+               align="left"){
+  ctx.fillStyle=color;
+  ctx.font=`${size}px system-ui`;
+  ctx.textAlign=align;
+  ctx.fillText(text,x,y);
+}
+
+function drawBlade(cx,cy,r,a){
+  const x1=cx+Math.cos(a)*r;
+  const y1=cy+Math.sin(a)*r;
+
+  const x2=cx+Math.cos(a+.15)*(r+35);
+  const y2=cy+Math.sin(a+.15)*(r+35);
+
+  const x3=cx+Math.cos(a+.38)*(r+24);
+  const y3=cy+Math.sin(a+.38)*(r+24);
+
+  ctx.beginPath();
+  ctx.moveTo(x1,y1);
+  ctx.lineTo(x2,y2);
+  ctx.lineTo(x3,y3);
+  ctx.closePath();
+  ctx.fill();
+}
+
+function draw(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  ctx.strokeStyle="rgba(255,255,255,.035)";
+  ctx.lineWidth=1;
+
+  for(let x=0;x<canvas.width;x+=40){
+    ctx.beginPath();
+    ctx.moveTo(x,0);
+    ctx.lineTo(x,canvas.height);
+    ctx.stroke();
+  }
+
+  for(let y=0;y<canvas.height;y+=40){
+    ctx.beginPath();
+    ctx.moveTo(0,y);
+    ctx.lineTo(canvas.width,y);
+    ctx.stroke();
+  }
+
+  ctx.strokeStyle="#59636d";
+  ctx.lineWidth=4;
+  ctx.beginPath();
+  ctx.moveTo(45,455);
+  ctx.lineTo(850,455);
+  ctx.stroke();
+
+  // Firebox
+  roundRect(
+    70,330,225,110,12,
+    "#20282f","#69747e"
+  );
+
+  label(
+    "EXTERNAL HEAT SOURCE",
+    182,356,12,
+    "#9fb0bf","center"
+  );
+
+  const h=Number(heat.value)/100;
+
+  for(let i=0;i<6;i++){
+    const fx=104+i*28;
+    const fh=
+      16+38*h*
+      (0.45+
+       0.55*Math.sin(simTime*5+i)**2);
+
+    ctx.fillStyle=
+      i%2 ? "#d85a3a" : "#d7923b";
+
+    ctx.beginPath();
+    ctx.moveTo(fx,425);
+    ctx.quadraticCurveTo(
+      fx-8,408-fh*.35,
+      fx,405-fh
+    );
+    ctx.quadraticCurveTo(
+      fx+9,410-fh*.25,
+      fx+13,425
+    );
+    ctx.fill();
+  }
+
+  // Boiler
+  roundRect(
+    85,115,210,205,50,
+    "#68737c","#aeb7be"
+  );
+
+  ctx.fillStyle="#2b687b";
+  ctx.globalAlpha=.68;
+  ctx.beginPath();
+  ctx.roundRect(
+    96,205,188,100,28
+  );
+  ctx.fill();
+  ctx.globalAlpha=1;
+
+  ctx.fillStyle=
+    `rgba(217,238,245,${
+      0.06+0.20*clamp(pressure/270,0,1)
+    })`;
+
+  ctx.beginPath();
+  ctx.roundRect(
+    96,128,188,76,25
+  );
+  ctx.fill();
+
+  label(
+    "BOILER",
+    190,145,15,
+    "#eef3f6","center"
+  );
+
+  label(
+    "steam",
+    190,180,12,
+    "#d9eef5","center"
+  );
+
+  label(
+    "water",
+    190,260,12,
+    "#9ed7e4","center"
+  );
+
+  // Boiler safety valve
+  ctx.strokeStyle="#aeb7be";
+  ctx.lineWidth=8;
+  ctx.beginPath();
+  ctx.moveTo(250,115);
+  ctx.lineTo(250,88);
+  ctx.stroke();
+
+  ctx.fillStyle=
+    safetyOpen ? "#d85a3a" : "#77838d";
+
+  ctx.beginPath();
+  ctx.arc(
+    250,80,9,
+    0,Math.PI*2
+  );
+  ctx.fill();
+
+  label(
+    "safety valve",
+    250,60,11,
+    "#9fb0bf","center"
+  );
+
+  if(safetyOpen){
+    for(let i=0;i<5;i++){
+      const yy=
+        50-i*9-
+        (simTime*22+i*7)%12;
+
+      ctx.fillStyle=
+        `rgba(217,238,245,${
+          0.18+i*.07
+        })`;
+
+      ctx.beginPath();
+      ctx.arc(
+        250+(i%2?5:-4),
+        yy,
+        7+i,
+        0,Math.PI*2
+      );
+      ctx.fill();
+    }
+  }
+
+  // Steam pipe and valve
+  ctx.strokeStyle="#89949d";
+  ctx.lineWidth=11;
+  ctx.beginPath();
+  ctx.moveTo(295,170);
+  ctx.lineTo(390,170);
+  ctx.lineTo(390,250);
+  ctx.stroke();
+
+  roundRect(
+    345,151,58,38,7,
+    "#303b44","#84909a"
+  );
+
+  const v=Number(valve.value)/100;
+
+  ctx.save();
+  ctx.translate(374,170);
+  ctx.rotate(-1.0+2.0*v);
+  ctx.strokeStyle="#d7923b";
+  ctx.lineWidth=5;
+  ctx.beginPath();
+  ctx.moveTo(-11,0);
+  ctx.lineTo(11,0);
+  ctx.stroke();
+  ctx.restore();
+
+  label(
+    "STEAM VALVE",
+    374,138,11,
+    "#9fb0bf","center"
+  );
+
+  // Nozzle
+  ctx.fillStyle="#8f999f";
+  ctx.beginPath();
+  ctx.moveTo(390,238);
+  ctx.lineTo(455,256);
+  ctx.lineTo(455,278);
+  ctx.lineTo(390,290);
+  ctx.closePath();
+  ctx.fill();
+
+  label(
+    "NOZZLE",
+    420,312,11,
+    "#9fb0bf","center"
+  );
+
+  // Steam jet
+  const jetStrength =
+    v*clamp(pressure/200,0,1);
+
+  if(jetStrength>.02){
+    ctx.strokeStyle =
+      `rgba(217,238,245,${
+        .25+.55*jetStrength
+      })`;
+
+    ctx.lineWidth =
+      8+10*jetStrength;
+
+    ctx.beginPath();
+    ctx.moveTo(455,267);
+    ctx.lineTo(555,267);
+    ctx.stroke();
+  }
+
+  for(const p of steamParticles){
+    ctx.fillStyle =
+      `rgba(230,244,248,${
+        p.life*.45
+      })`;
+
+    ctx.beginPath();
+    ctx.arc(
+      p.x,p.y,
+      5+(1-p.life)*5,
+      0,Math.PI*2
+    );
+    ctx.fill();
+  }
+
+  // Turbine housing
+  ctx.strokeStyle="#59636d";
+  ctx.lineWidth=6;
+  ctx.beginPath();
+  ctx.arc(
+    650,270,112,
+    Math.PI*.75,
+    Math.PI*2.25
+  );
+  ctx.stroke();
+
+  label(
+    "TURBINE",
+    650,125,14,
+    "#9fb0bf","center"
+  );
+
+  // Rotor and blades
+  ctx.fillStyle="#98a2aa";
+
+  for(let i=0;i<14;i++){
+    drawBlade(
+      650,270,42,
+      angle+i*Math.PI*2/14
+    );
+  }
+
+  ctx.fillStyle="#b9c0c6";
+  ctx.beginPath();
+  ctx.arc(
+    650,270,38,
+    0,Math.PI*2
+  );
+  ctx.fill();
+
+  ctx.fillStyle="#6b757e";
+  ctx.beginPath();
+  ctx.arc(
+    650,270,13,
+    0,Math.PI*2
+  );
+  ctx.fill();
+
+  // Reference marker makes true rotation direction obvious.
+  const markerAngle = angle;
+  const markerX =
+    650+Math.cos(markerAngle)*72;
+  const markerY =
+    270+Math.sin(markerAngle)*72;
+
+  ctx.fillStyle="#d7923b";
+  ctx.beginPath();
+  ctx.arc(
+    markerX,markerY,7,
+    0,Math.PI*2
+  );
+  ctx.fill();
+
+  label(
+    "rotation marker",
+    735,160,11,
+    "#d7923b","center"
+  );
+
+  // Shaft
+  ctx.strokeStyle="#9aa4ad";
+  ctx.lineWidth=12;
+  ctx.beginPath();
+  ctx.moveTo(650,270);
+  ctx.lineTo(820,270);
+  ctx.stroke();
+
+  roundRect(
+    790,232,60,76,10,
+    "#303943","#7c8790"
+  );
+
+  label(
+    "LOAD",
+    820,276,12,
+    "#dbe4ea","center"
+  );
+
+  // Exhaust
+  ctx.strokeStyle="#69747e";
+  ctx.lineWidth=12;
+  ctx.beginPath();
+  ctx.moveTo(650,382);
+  ctx.lineTo(650,430);
+  ctx.stroke();
+
+  for(let i=0;i<5;i++){
+    const yy=
+      438+
+      ((simTime*18+i*17)%55);
+
+    ctx.fillStyle=
+      `rgba(217,238,245,${
+        .12+i*.035
+      })`;
+
+    ctx.beginPath();
+    ctx.arc(
+      650+(i%2?7:-6),
+      yy,
+      7+i,
+      0,Math.PI*2
+    );
+    ctx.fill();
+  }
+
+  // Momentum-change cue
+  if(jetStrength>.08){
+    ctx.strokeStyle=
+      "rgba(215,146,59,.8)";
+    ctx.lineWidth=3;
+
+    ctx.beginPath();
+    ctx.moveTo(505,225);
+    ctx.lineTo(575,245);
+    ctx.stroke();
+
+    ctx.fillStyle="#d7923b";
+    ctx.beginPath();
+    ctx.moveTo(575,245);
+    ctx.lineTo(564,236);
+    ctx.lineTo(562,249);
+    ctx.closePath();
+    ctx.fill();
+
+    label(
+      "steam jet transfers momentum",
+      545,210,11,
+      "#d7923b","center"
+    );
+  }
+
+  label(
+    "heat → steam → high-speed jet → turbine → shaft",
+    450,505,13,
+    "#c7cfd5","center"
+  );
+}
+
+let last=performance.now();
+
+function loop(now){
+  const dt=
+    Math.min(
+      (now-last)/1000,
+      .035
+    );
+
+  last=now;
+
+  if(running){
+    physics(dt);
+  }
+
+  draw();
+  requestAnimationFrame(loop);
+}
+
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
