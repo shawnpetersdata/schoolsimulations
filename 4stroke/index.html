@@ -1,0 +1,139 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Interactive 4-Stroke Gasoline Engine</title>
+<style>
+:root{--bg:#11151a;--panel:#1b222a;--text:#e7edf2;--muted:#9fb0bf;--accent:#d7923b;--hot:#d85a3a;--air:#8ec5df;--fuel:#d9c36a}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(#0e1216,#151b21);color:var(--text);font-family:system-ui,Segoe UI,Arial,sans-serif}
+.wrap{max-width:1200px;margin:auto;padding:18px}.sub{color:var(--muted);margin-bottom:14px}.grid{display:grid;grid-template-columns:1fr 300px;gap:14px}
+.card{background:#1b222a;border:1px solid #303a45;border-radius:14px}.sim{padding:10px}.controls{padding:16px}canvas{width:100%;height:auto;display:block;background:#0f151b;border-radius:10px}
+.control{margin-bottom:16px}.row{display:flex;justify-content:space-between;font-size:.94rem;margin-bottom:5px}input{width:100%;accent-color:var(--accent)}
+.buttons{display:grid;grid-template-columns:1fr 1fr;gap:8px}button{padding:9px;border-radius:9px;border:1px solid #3c4854;background:#28323c;color:var(--text);font-weight:600}
+.readouts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}.readout{background:#151b21;border:1px solid #303943;border-radius:9px;padding:9px;min-height:66px}
+.v{font-weight:700}.k,.note,.legend{color:var(--muted);font-size:.8rem}.note{margin-top:12px;line-height:1.4}.legend{padding:10px 14px 14px}
+@media(max-width:850px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body><div class="wrap"><h1>Interactive 4-Stroke Gasoline Engine</h1><div class="sub">A simplified spark-ignition engine showing intake, compression, power, and exhaust across two crankshaft revolutions.</div><div class="grid">
+<div class="card sim"><canvas id="c" width="900" height="560"></canvas><div class="legend">Blue = intake air • Yellow = fuel • Orange = combustion • Grey = exhaust/mechanical parts</div></div>
+<div class="card controls"><h2>Controls</h2>
+<div class="control"><div class="row"><span>Throttle</span><strong id="throttleVal">35%</strong></div><input id="throttle" type="range" min="0" max="100" value="35"></div>
+<div class="control"><div class="row"><span>Mechanical Load</span><strong id="loadVal">20%</strong></div><input id="load" type="range" min="0" max="100" value="20"></div>
+<div class="control"><div class="row"><span>Mixture</span><strong id="mixVal">100%</strong></div><input id="mix" type="range" min="60" max="130" value="100"></div>
+
+<div class="buttons"><button id="pause">Pause</button><button id="reset">Reset</button></div>
+<div class="readouts">
+<div class="readout"><div class="v" id="rpm">0 rpm</div><div class="k">Engine speed</div></div>
+<div class="readout"><div class="v" id="phase">Starting</div><div class="k">Cycle phase</div></div>
+<div class="readout"><div class="v" id="power">0%</div><div class="k">Relative power</div></div>
+<div class="readout"><div class="v" id="temp">20 °C</div><div class="k">Cylinder temperature</div></div>
+</div><div class="note">The four-stroke gasoline cycle uses a spark plug to ignite the compressed air-fuel mixture. One power stroke occurs every two crankshaft revolutions.</div></div></div></div>
+<script>
+const MODE="four";
+const c=document.getElementById("c"),x=c.getContext("2d");
+let run=true,rpm=0,a=0,T=20,last=performance.now();
+
+function clamp(v,l,h){return Math.max(l,Math.min(h,v))}
+function lab(t,px,py,s=14,col="#dbe4ea",al="left"){x.fillStyle=col;x.font=`${s}px system-ui`;x.textAlign=al;x.fillText(t,px,py)}
+function rr(px,py,w,h,r,f,s){x.beginPath();x.roundRect(px,py,w,h,r);if(f){x.fillStyle=f;x.fill()}if(s){x.strokeStyle=s;x.lineWidth=2;x.stroke()}}
+function py(cr){return 255+Math.cos(cr)*100}
+function grid(){
+ // Paint an opaque background every frame.
+ // This prevents transparency checkerboards in some viewers.
+ x.globalAlpha=1;
+ x.fillStyle="#0f151b";
+ x.fillRect(0,0,900,560);
+
+ // Very subtle reference grid.
+ x.strokeStyle="rgba(255,255,255,.035)";
+ x.lineWidth=1;
+ for(let i=0;i<900;i+=40){
+   x.beginPath();
+   x.moveTo(i,0);
+   x.lineTo(i,560);
+   x.stroke();
+ }
+ for(let i=0;i<560;i+=40){
+   x.beginPath();
+   x.moveTo(0,i);
+   x.lineTo(900,i);
+   x.stroke();
+ }
+
+ x.strokeStyle="#59636d";
+ x.lineWidth=4;
+ x.beginPath();
+ x.moveTo(60,470);
+ x.lineTo(840,470);
+ x.stroke();
+}
+function core(p,cr,vin,vout,spark,inject,ph,col){
+ rr(300,110,240,280,18,"#3b454e","#9aa4ad");
+ x.fillStyle=col;x.globalAlpha=.32;x.fillRect(318,130,204,Math.max(10,p-130));x.globalAlpha=1;
+ x.strokeStyle=vin?"#8ec5df":"#6f7880";x.lineWidth=10;x.beginPath();x.moveTo(350,110);x.lineTo(350,vin?96:78);x.stroke();
+ x.strokeStyle=vout?"#b0a49a":"#6f7880";x.beginPath();x.moveTo(490,110);x.lineTo(490,vout?96:78);x.stroke();
+ lab("INTAKE",350,55,11,"#8ec5df","center");lab("EXHAUST",490,55,11,"#b0a49a","center");
+ x.strokeStyle="#59636d";x.lineWidth=14;x.beginPath();x.moveTo(350,90);x.lineTo(240,90);x.stroke();x.beginPath();x.moveTo(490,90);x.lineTo(610,90);x.stroke();
+ x.fillStyle="#c3c9ce";x.fillRect(320,p-18,200,36);x.strokeStyle="#eef3f6";x.strokeRect(320,p-18,200,36);
+ const cx=420,cy=430,r=52,px=cx+Math.cos(cr)*r,qy=cy+Math.sin(cr)*r;
+ x.strokeStyle="#9aa4ad";x.lineWidth=9;x.beginPath();x.moveTo(420,p);x.lineTo(px,qy);x.stroke();
+ x.strokeStyle="#818b94";x.lineWidth=14;x.beginPath();x.arc(cx,cy,82,0,Math.PI*2);x.stroke();
+ x.fillStyle="#d7923b";x.beginPath();x.arc(px,qy,8,0,Math.PI*2);x.fill();
+ if(spark){lab("SPARK",415,64,11,"#ffd36b","center");x.strokeStyle="#ffd36b";x.lineWidth=3;x.beginPath();x.moveTo(415,110);x.lineTo(415,78);x.stroke()}
+ if(inject){lab("INJECTOR",415,64,11,"#d9c36a","center");x.strokeStyle="#d9c36a";x.lineWidth=4;x.beginPath();x.moveTo(415,110);x.lineTo(415,76);x.stroke()}
+ lab(ph,420,405,16,"#e7edf2","center");
+}
+function val(id){return +document.getElementById(id).value}
+function updateLabels(){
+ document.querySelectorAll("input[type=range]").forEach(el=>{
+   const out=document.getElementById(el.id+"Val"); if(out) out.textContent=el.id==="comp"?el.value+":1":el.value+"%";
+ });
+}
+document.querySelectorAll("input").forEach(e=>e.addEventListener("input",updateLabels));updateLabels();
+document.getElementById("pause").onclick=()=>{run=!run;document.getElementById("pause").textContent=run?"Pause":"Resume"};
+document.getElementById("reset").onclick=()=>{rpm=0;a=0;T=20};
+
+function physics(dt){
+ let target=0,heat=40,load=val("load")/100;
+ if(MODE==="diesel"){
+   const f=val("fuel")/100,cr=val("comp");
+   target=70+f*430*clamp((cr-12)/10,.2,1.2)-load*210;
+ } else {
+   const th=val("throttle")/100,m=val("mix")/100,eff=clamp(1-Math.abs(m-1)*1.6,.45,1);
+   target=(MODE==="two"?110:80)+th*(MODE==="two"?560:440)*eff-load*(MODE==="two"?260:220);
+ }
+ rpm+=(target-rpm)*1.15*dt;rpm=clamp(rpm,0,650);
+ a+=rpm*Math.PI*2/60*dt;
+ const cyc=MODE==="two"?(a%(Math.PI*2)):(a%(Math.PI*4));
+ const stroke=MODE==="two"?0:Math.floor(cyc/Math.PI);
+ if(MODE==="diesel") heat=stroke===1?430:stroke===2?650:50;
+ else heat=(MODE==="two"?cyc<Math.PI:stroke===2)?520:50;
+ T+=(heat-T)*1.3*dt;
+}
+
+function draw(){
+ grid();
+ let cyc,cr,p,ph,vin=false,vout=false,spark=false,inject=false,col="rgba(142,197,223,.8)";
+ if(MODE==="two"){
+   cyc=a%(Math.PI*2);cr=cyc;p=py(cr);
+   if(cyc<Math.PI){ph="COMPRESSION + IGNITION";spark=cyc<.35;col="rgba(216,90,58,.85)"}
+   else{ph="POWER + EXHAUST / TRANSFER";col="rgba(154,143,134,.75)"}
+   core(p,cr,false,false,spark,false,ph,col);
+   x.strokeStyle="#8ec5df";x.lineWidth=14;x.beginPath();x.moveTo(300,300);x.lineTo(245,300);x.stroke();
+   x.strokeStyle="#b0a49a";x.beginPath();x.moveTo(540,270);x.lineTo(610,270);x.stroke();
+   lab("TRANSFER PORT",225,325,11,"#8ec5df","center");lab("EXHAUST PORT",635,294,11,"#b0a49a","center");
+ } else {
+   cyc=a%(Math.PI*4);const st=Math.floor(cyc/Math.PI),local=cyc%Math.PI;cr=cyc+Math.PI;p=py(cr);
+   ph=["INTAKE","COMPRESSION","POWER","EXHAUST"][st];vin=st===0;vout=st===3;
+   if(st===1) col="rgba(180,210,220,.7)";
+   if(st===2) col="rgba(216,90,58,.88)";
+   if(st===3) col="rgba(154,143,134,.75)";
+   if(MODE==="diesel") inject=st===2&&local<.55; else spark=st===2&&local<.35;
+   core(p,cr,vin,vout,spark,inject,ph,col);
+   if(MODE==="diesel"&&st===1) lab("air heats strongly during compression",420,145,12,"#f0b27a","center");
+ }
+ lab(MODE==="two"?"2-STROKE GASOLINE":MODE==="diesel"?"4-STROKE DIESEL":"4-STROKE GASOLINE",420,525,15,"#9fb0bf","center");
+ document.getElementById("rpm").textContent=Math.round(rpm)+" rpm";
+ document.getElementById("phase").textContent=ph;
+ document.getElementById("power").textContent=Math.round(clamp(rpm/(MODE==="two"?650:520),0,1)*100)+"%";
+ document.getElementById("temp").textContent=Math.round(T)+" °C";
+}
+function loop(now){const dt=Math.min((now-last)/1000,.035);last=now;if(run)physics(dt);draw();requestAnimationFrame(loop)}requestAnimationFrame(loop);
+</script></body></html>
