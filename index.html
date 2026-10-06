@@ -1,18 +1,206 @@
 <!DOCTYPE html>
-<html lang="en"><head>
-    <script src="https://cdn.jsdelivr.net/npm/p5@2.3.3/lib/p5.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/p5.sound@0.4.1/dist/p5.sound.min.js"></script>
-    
-    
-    
-    <link rel="stylesheet" type="text/css" href="style.css">
-    <meta charset="utf-8">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-  </head>
-  <body>
+    <title>School Simulations</title>
+
+    <style>
+        :root {
+            --bg: #11151a;
+            --panel: #1b222a;
+            --panel-hover: #242d36;
+            --text: #e7edf2;
+            --muted: #9fb0bf;
+            --accent: #d7923b;
+            --border: #303a45;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background:
+                linear-gradient(180deg, #0e1216, #151b21);
+            color: var(--text);
+            font-family:
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+        }
+
+        header {
+            text-align: center;
+            padding: 60px 20px 35px;
+        }
+
+        header h1 {
+            margin: 0 0 10px;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+        }
+
+        header p {
+            max-width: 650px;
+            margin: 0 auto;
+            color: var(--muted);
+            line-height: 1.6;
+            font-size: 1.05rem;
+        }
+
+        main {
+            width: min(1100px, 92%);
+            margin: 0 auto;
+            padding-bottom: 60px;
+        }
+
+        .sim-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        .sim-card {
+            display: flex;
+            flex-direction: column;
+            min-height: 210px;
+            padding: 24px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            color: var(--text);
+            text-decoration: none;
+            transition:
+                transform 0.2s ease,
+                background 0.2s ease,
+                border-color 0.2s ease;
+        }
+
+        .sim-card:hover {
+            transform: translateY(-4px);
+            background: var(--panel-hover);
+            border-color: var(--accent);
+        }
+
+        .sim-card h2 {
+            margin: 0 0 10px;
+            font-size: 1.35rem;
+        }
+
+        .sim-card p {
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.5;
+        }
+
+        .subject {
+            display: inline-block;
+            align-self: flex-start;
+            margin-top: auto;
+            padding-top: 22px;
+            color: var(--accent);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        footer {
+            padding: 30px 20px;
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>School Simulations</h1>
+
+        <p>
+            Interactive simulations and visualizations
+            for exploring concepts in science,
+            mathematics, and technology.
+        </p>
+    </header>
+
     <main>
-    </main>
-    <script src="accelerationIncline.js"></script>
-  
 
-</body></html>
+        <section class="sim-grid">
+
+            <a class="sim-card"
+               href="steam-engine/">
+
+                <h2>Steam Engine</h2>
+
+                <p>
+                    Explore how heat, steam pressure,
+                    throttle position, and mechanical
+                    load affect an external combustion
+                    engine.
+                </p>
+
+                <span class="subject">
+                    Physics
+                </span>
+
+            </a>
+
+
+            <a class="sim-card"
+               href="ramp/">
+
+                <h2>Kinematics Ramp</h2>
+
+                <p>
+                    Investigate position, velocity,
+                    acceleration, and motion along
+                    an inclined ramp.
+                </p>
+
+                <span class="subject">
+                    Physics
+                </span>
+
+            </a>
+
+
+            
+
+            <!--
+            COPY THIS BLOCK TO ADD ANOTHER SIMULATION
+
+            <a class="sim-card"
+               href="folder-name/">
+
+                <h2>Simulation Name</h2>
+
+                <p>
+                    Short description of the simulation.
+                </p>
+
+                <span class="subject">
+                    Subject
+                </span>
+
+            </a>
+            -->
+
+        </section>
+
+    </main>
+
+    <footer>
+        Interactive educational simulations
+    </footer>
+
+</body>
+</html>
