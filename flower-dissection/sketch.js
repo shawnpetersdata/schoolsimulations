@@ -1,5 +1,15 @@
 let stamen = []
+let ovules = []
 let interactives = []
+let state = "move"
+let button
+let instructions
+let orient
+let scl
+let pistil
+
+let startCut = null
+let endCut = null
 
 class Interactive {
     constructor(x, y, img) {
@@ -46,34 +56,55 @@ class Interactive {
     }
 }
 
-class Petal extends Interactive {
+class Pistil extends Interactive {
     constructor(x, y, angle, img, img2) {
         super(x, y, img)
         this.angle = angle
         this.img2 = img2
-        this.manipulated = false
+        this.cut = false
+        this.ovules = []
     }
 
     update(x, y) {
-        super.update(x, y)
+    let prevX = this.x
+    let prevY = this.y
 
-        if (this.isClicked) {
-            this.manipulated = true
+    super.update(x, y)
+
+    let dx = this.x - prevX
+    let dy = this.y - prevY
+
+    this.ovules.forEach(ovule => {
+        if (!ovule.removed) {
+            ovule.x += dx
+            ovule.y += dy
         }
+    })
+}
+    dissect() {
+        this.cut = true
+        this.img = this.img2
     }
+}
+
+class Ovule extends Interactive {
+    constructor(x, y, angle, img, pistil) {
+        super(x, y, img)
+        this.removed = false
+        this.angle = angle
+        this.pistil = pistil
+    }
+    update(x,y) {
+        super.update(x,y)
+        if(this.isClicked && !this.removed) {
+            this.removed = true 
+        }
+        }
 
     draw() {
-        push()
-        translate(this.x, this.y)
-        rotate(this.angle)
-
-        if (this.manipulated) {
-            image(this.img2, 0, 0)
-        } else {
-            image(this.img, 0, 0)
+        if(this.pistil.cut) {
+            super.draw()
         }
-
-        pop()
     }
 }
 
@@ -121,7 +152,7 @@ class Stamen extends Interactive {
         rotate(this.angle)
         image(this.img, 0, 0)
         pop()
-
+        noStroke()
         fill('yellow')
 
         this.pollen.forEach(pollen => {
@@ -131,15 +162,33 @@ class Stamen extends Interactive {
 }
 
 async function setup() {
-    let dim = min(windowWidth, windowHeight)
-    createCanvas(dim,dim)
+    let dim
+    let x, y
+    if (windowWidth >= windowHeight) {
+        orient = "horizontal"
+        dim = min(windowWidth / 2, windowHeight)
+        createCanvas(dim * 2, dim)
+        x = width/4 
+        y = height/2
+    } else {
+        orient = "vertical"
+        dim = min(windowWidth, windowHeight / 2)
+        createCanvas(dim, dim * 2)
+        x = width/2
+        y = height/5
+    }
+
+    nextButton = createButton("Next")
+
     imageMode(CENTER)
     noStroke()
-    let scl = 250 / dim
-    await buildFlower(scl)
+
+    scl = dim / 1500
+    textSize(scl*50)
+    await buildFlower(x,y,scl)
 }
 
-async function buildFlower(scl) {
+async function buildFlower(x0,y0,scl) {
     interactives = []
     stamen = []
 
@@ -149,7 +198,7 @@ async function buildFlower(scl) {
             `images/stamen${i}.png`
         )
 
-        img.resize(img.width * scl, 0)
+        img.resize(img.width * scl*1.25, 0)
         stamen.push(img)
     }
 
@@ -164,9 +213,6 @@ async function buildFlower(scl) {
         
     ]
 
-
-
-
     for (let data of petalData) {
         let img = await loadImage(
             `images/flowerPart${data.id}.png`
@@ -174,11 +220,11 @@ async function buildFlower(scl) {
 
         img.resize(img.width * scl, 0)
 
-        let x = width / 2 + img.width * data.x
-        let y = height / 2 + img.height * data.y
+        let x = x0 + img.width * data.x
+        let y = y0 + img.height * data.y
 
         interactives.push(
-            new Petal(x, y, 0, img, img)
+            new Interactive(x, y, img)
         )
     }
 
@@ -198,10 +244,10 @@ async function buildFlower(scl) {
 
         let h = stamen[i].height
 
-        let x = width / 2 +
+        let x = x0 +
             h / 2 * sin(angle)
 
-        let y = height / 2 -
+        let y = y0 -
             h / 2 * cos(angle)
 
         interactives.push(
@@ -212,60 +258,202 @@ async function buildFlower(scl) {
     //base
     let img = await loadImage('images/flowerPart0.png')
     img.resize(img.width*scl,0)
-    interactives.splice(1,0,new Interactive(width/2, height/2+img.height/4, img))
+    interactives.splice(1,0,new Interactive(x0, y0+img.height/4, img))
 
 
     //pistil
     img = await loadImage('images/pistil.png')
-    img.resize(img.width*scl*1.5, 0)
-    interactives.splice(2,0,new Interactive(width/2, height/2-img.height/5, img))
+    let img2 = await(loadImage('images/pistil_split.png'))
+    img.resize(img.width*scl*2, 0)
+    img2.resize(img2.width*scl*2, 0)
+    
+    pistil = new Pistil(x0, y0-img.height/5, 0,  img, img2)
 
+    interactives.splice(2,0,pistil)
+    let ovuleImgs = []
+    for (let i = 0; i < 8; i++) {
+        let img = await loadImage(
+            `images/ovule${i}.png`
+        )
 
+        img.resize(img.width * scl*2, 0)
+        ovuleImgs.push(img)
+    }
+    
+    let amount = constrain(
+        floor(randomGaussian(3,0.5)),
+        2,
+        4
+    )
+    console.log(amount)
+    let xShifts = [
+        -0.35*pistil.img2.width,
+        -0.15*pistil.img2.width,
+        0.15*pistil.img2.width,
+        0.35*pistil.img2.width
+    ]
+    for (let xShift of xShifts) {
+    for (let i = 0; i<amount; i++) {
+            img = random(ovuleImgs)
+            let ovule = new Ovule(
+                    pistil.x+xShift,
+                    pistil.y+0.35*pistil.img2.height- i*img.height,
+                    random(TWO_PI),
+                    img,
+                    pistil
+                )
+            interactives.push(ovule)
+            ovules.push(ovule)
+            
+            
+        }
+    }
+    pistil.ovules = ovules
 }
 
 function draw() {
-    clear()
+    if (state === "move") {
+        background(200)
+        
+        
+    }
+    else {
+        background(255,200,200)
+        interactives.forEach(part => {
+            part.update(mouseX, mouseY)
+            part.draw()
+        })
+    }
 
     noFill()
+
+    if (state === "move") {
 
     interactives.forEach(part => {
         part.update(mouseX, mouseY)
         part.draw()
     })
 }
+    noFill()
+    
+    if (orient == "horizontal") {
+        noStroke()
+        fill(0)
+        text("Petals",width/2, height/25)
+        text("Sepals",0.75*width, height/25)
+        text("Pistil",width/2, 0.63 *height)
+        text("Stamen",0.75*width, 0.63*height)
+        text("Ovules",width/2, 0.83*height)
+        text("Calyx",0.75*width, 0.83*height)
+        strokeWeight(1)
+        stroke(0)
+        line(0.475*width,0.6*height,width,0.6*height)
+        line(0.475*width,0.8*height,width,0.8*height)
+        line(0.475*width,0,0.475*width,height)
+        line(0.725*width,0,0.725*width,height)
+
+        
+    }
+
+    else{
+        noStroke()
+        fill(0)
+        text("Petals",width/25, 0.35*height)
+        text("Sepals",width/2, 0.35*height)
+        text("Pistil",width/25, 0.6*height)
+        text("Stamen",width/2, 0.6*height)
+        text("Ovules",width/25, 0.825*height)
+        text("Calyx",width/2, 0.825*height)
+        strokeWeight(1)
+        stroke(0)
+        line(0,0.33*height,width,0.33*height)
+        line(0,0.58*height,width,0.58*height)
+        line(0,0.8*height,width,0.8*height)
+        line(0.475*width,0.33*height,0.475*width,height)
+
+
+    }
+    if (state === "cut" && startCut) {
+        stroke(0)
+        for (let i = 0; i < 5; i++) {
+            let t1 = 2 * i / 10
+            let t2 = (2 * i + 1) / 10
+
+            let x1 = lerp(startCut.x, mouseX, t1)
+            let x2 = lerp(startCut.x, mouseX, t2)
+            let y1 = lerp(startCut.y, mouseY, t1)
+            let y2 = lerp(startCut.y, mouseY, t2)
+
+            line(x1, y1, x2, y2)
+        }        
+    }
+}
+
+function keyPressed() {
+    if (key === 'c') {
+        if (state === "move") state = "cut"
+        else if (state === "cut") state = "move"
+    }
+}
 
 function mousePressed() {
-    let closest = null
-    let minDist = Infinity
+    if (state === "move") {
+        let closest = null
+        let minDist = Infinity
 
-    interactives.forEach(part => {
-        if (!part.contains(mouseX, mouseY)) {
-            return
+        interactives.forEach(part => {
+            if (!part.contains(mouseX, mouseY)) {
+                return
+            }
+
+            let d = dist(
+                mouseX, mouseY,
+                part.x, part.y
+            )
+
+            if (d < minDist) {
+                minDist = d
+                closest = part
+            }
+        })
+
+        if (closest) {
+            closest.isClicked = true
+
+            closest.offsetX =
+                mouseX - closest.x
+
+            closest.offsetY =
+                mouseY - closest.y
         }
-
-        let d = dist(
-            mouseX, mouseY,
-            part.x, part.y
-        )
-
-        if (d < minDist) {
-            minDist = d
-            closest = part
-        }
-    })
-
-    if (closest) {
-        closest.isClicked = true
-
-        closest.offsetX =
-            mouseX - closest.x
-
-        closest.offsetY =
-            mouseY - closest.y
+    }
+    else if (state === "cut") {
+        startCut = createVector(mouseX, mouseY)
     }
 }
 
 function mouseReleased() {
+    if (state === "cut") {
+        endCut = createVector(mouseX, mouseY)
+        let minY = min(startCut.y, endCut.y)
+        let maxY = max(startCut.y, endCut.y)
+
+        let cutX = (startCut.x + endCut.x) / 2
+
+        if (
+            abs(startCut.x - endCut.x) < scl * 100 &&
+            abs(cutX - pistil.x) < pistil.img.width * 0.15 &&
+            minY < pistil.y - pistil.img.height * 0.4 &&
+            maxY > pistil.y + pistil.img.height * 0.4
+        ) {
+            pistil.dissect()
+    state = "move"
+}
+
+        startCut = null
+        endCut = null
+
+    }
     interactives.forEach(part => {
         part.isClicked = false
     })
