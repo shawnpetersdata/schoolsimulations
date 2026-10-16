@@ -1,7 +1,156 @@
-html, body {
-  margin: 0;
-  padding: 0;
+/* Biology 3201 — Virtual Flower Dissection */
+:root {
+  color-scheme: light;
+  --maroon: #692c3b;
+  --maroon-dark: #4b1e2a;
+  --maroon-pale: #f6edf0;
+  --charcoal: #30343a;
+  --slate: #636b74;
+  --silver: #d6d9dd;
+  --background: #f1f2f4;
+  --white: #ffffff;
+  font-family: Arial, Helvetica, sans-serif;
 }
-canvas {
-  display: block;
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  color: var(--charcoal);
+  background: var(--background);
+  line-height: 1.5;
+}
+
+header {
+  background: var(--maroon);
+  border-bottom: 5px solid #9b9197;
+  color: var(--white);
+  padding: 26px 20px;
+  text-align: center;
+}
+
+header h1 {
+  margin: 0 0 4px;
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  letter-spacing: .01em;
+}
+
+header p { margin: 0; color: #f1e4e8; }
+
+main {
+  width: 100%;
+  max-width: none;
+  margin: 20px auto;
+  padding: 0 18px 32px;
+}
+
+section {
+  margin-bottom: 20px;
+  padding: 22px 26px;
+  background: var(--white);
+  border: 1px solid var(--silver);
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgb(30 30 30 / 4%);
+}
+
+h2 {
+  margin: 0 0 14px;
+  color: var(--maroon);
+  font-size: 1.3rem;
+}
+
+ol { margin: 0; padding-left: 1.5rem; line-height: 1.7; }
+li { padding-left: .2rem; }
+li + li { margin-top: 8px; }
+li::marker { color: var(--maroon); font-weight: bold; }
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.controls span {
+  padding: 9px 12px;
+  background: var(--maroon-pale);
+  border: 1px solid #e7d5dc;
+  border-radius: 6px;
+  font-size: .93rem;
+}
+
+kbd {
+  display: inline-block;
+  padding: 2px 7px;
+  font: inherit;
+  font-weight: bold;
+  color: var(--maroon-dark);
+  background: #fff;
+  border: 1px solid #cabdc2;
+  border-bottom-width: 2px;
+  border-radius: 4px;
+}
+
+.note {
+  margin: 16px 0 0;
+  padding: 11px 14px;
+  color: #53474c;
+  background: #f8f4f5;
+  border-left: 3px solid var(--maroon);
+  font-size: .95rem;
+}
+
+#sketch-holder {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: visible;
+}
+
+/* Keep the instructions readable without shrinking the lab. */
+section[aria-labelledby="instructions-heading"] {
+  max-width: 950px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+section[aria-labelledby="workspace-heading"] {
+  width: 100%;
+  max-width: none;
+}
+
+#sketch-holder canvas {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+button {
+  border: 1px solid var(--maroon-dark);
+  border-radius: 5px;
+  padding: 8px 15px;
+  background: var(--maroon);
+  color: white;
+  font: inherit;
+  cursor: pointer;
+}
+
+button:hover { background: var(--maroon-dark); }
+button:focus-visible, a:focus-visible {
+  outline: 3px solid #a66c7d;
+  outline-offset: 3px;
+}
+
+footer {
+  padding: 0 16px 25px;
+  text-align: center;
+  color: var(--slate);
+  font-size: .87rem;
+}
+
+@media (max-width: 650px) {
+  main { margin-top: 16px; padding: 0 10px 20px; }
+  section { padding: 17px 16px; }
+  .controls { gap: 8px; }
 }

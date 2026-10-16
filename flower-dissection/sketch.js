@@ -167,7 +167,8 @@ async function setup() {
     if (windowWidth >= windowHeight) {
         orient = "horizontal"
         dim = min(windowWidth / 2, windowHeight)
-        createCanvas(dim * 2, dim)
+        let canvas = createCanvas(dim * 2, dim)
+        canvas.parent("sketch-holder")
         x = width/4 
         y = height/2
     } else {
@@ -177,9 +178,6 @@ async function setup() {
         x = width/2
         y = height/5
     }
-
-    nextButton = createButton("Next")
-
     imageMode(CENTER)
     noStroke()
 
@@ -393,6 +391,15 @@ function keyPressed() {
     if (key === 'c') {
         if (state === "move") state = "cut"
         else if (state === "cut") state = "move"
+    }
+    else if (key === 's') {
+        if (orient == "horizontal") {
+            save(get(0.475*width,0,0.6*width,height))
+        }
+        else {
+            save(get(0,0.33*height,width,0.67*height))
+
+        }
     }
 }
 

@@ -1,18 +1,42 @@
 <!DOCTYPE html>
-<html lang="en"><head>
-    <script src="https://cdn.jsdelivr.net/npm/p5@2.3.3/lib/p5.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/p5.sound@0.4.1/dist/p5.sound.min.js"></script>
-    
-    
-    
-    <link rel="stylesheet" type="text/css" href="style.css">
-    <meta charset="utf-8">
-
-  </head>
-  <body>
-    <main>
-    </main>
-    <script src="sketch.js"></script>
-  
-
-</body></html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Biology | Virtual Flower Dissection</title>
+  <script src="https://cdn.jsdelivr.net/npm/p5@2.3.4/lib/p5.js"></script>
+  <script src="sketch.js" defer></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Virtual Flower Dissection</h1>
+    <p>Biology Lab · Alstroemeria</p>
+  </header>
+  <main>
+    <section aria-labelledby="instructions-heading">
+      <h2 id="instructions-heading">Instructions</h2>
+      <ol>
+        <li>Examine the flower before beginning your dissection.</li>
+        <li>Click and drag individual structures away from the flower. Arrange them in the appropriate labelled sections of the workspace.</li>
+        <li>When you are ready to dissect the pistil, press <kbd>C</kbd> to enter cutting mode.</li>
+        <li>Click and drag to make a lengthwise cut through the centre of the pistil. Release the mouse to complete the cut.</li>
+        <li>If the cut does not open the pistil, inspect its placement and try again. Press <kbd>C</kbd> to return to moving mode if needed.</li>
+        <li>Examine the exposed structures. Drag exposed parts away and place them in the appropriate section.</li>
+        <li>Finish arranging the dissected parts in the labelled workspace, then press <kbd>S</kbd> to save an image of your completed work.</li>
+      </ol>
+      <div class="controls" aria-label="Keyboard and mouse controls">
+        <span><strong>Mouse:</strong> Select and drag</span>
+        <span><kbd>C</kbd> Toggle cutting mode</span>
+        <span><kbd>S</kbd> Save workspace image</span>
+      </div>
+      <p class="note">Work carefully. The cutting tool requires a proper cut to expose the internal structures.</p>
+    </section>
+    <section aria-labelledby="workspace-heading">
+      <h2 id="workspace-heading">Dissection Workspace</h2>
+      <div id="sketch-holder"></div>
+    </section>
+  </main>
+  <footer>Biology · Virtual Laboratory</footer>
+</body>
+</html>
