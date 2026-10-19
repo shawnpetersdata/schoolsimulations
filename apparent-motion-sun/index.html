@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Science 9 | Apparent Motion Lab</title>
+<style>
+:root{--bg:#101924;--panel:#1b2937;--border:#354555;--text:#ecf2f6;--muted:#b5c6d4;--accent:#e2b362;--cyan:#99ddf2}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px system-ui,Segoe UI,Arial,sans-serif}header{padding:16px max(18px,3vw) 10px;border-bottom:1px solid var(--border)}h1{font-size:clamp(23px,3vw,30px);margin:0 0 3px}header p{margin:0 0 7px;color:var(--muted)}main{max-width:1390px;margin:auto;padding:17px 20px 35px}.controls{background:var(--panel);border:1px solid var(--border);border-radius:13px;padding:15px;display:grid;grid-template-columns:minmax(245px,1.5fr) minmax(195px,1fr) minmax(205px,1fr);gap:17px;align-items:end}.control label{display:flex;justify-content:space-between;gap:8px;font-weight:650;margin-bottom:9px}.control output{color:#ffdb94;font-variant-numeric:tabular-nums}input[type=range]{width:100%;accent-color:var(--accent);cursor:pointer}select{width:100%;font:inherit;color:var(--text);background:#304558;border:1px solid #678096;border-radius:8px;padding:9px}.buttons{display:flex;gap:8px;margin-top:9px}button{background:#344b5e;color:white;border:1px solid #677f91;border-radius:8px;padding:8px 15px;font:inherit;cursor:pointer}button.primary{background:#93662e;border-color:#d29b4d}button:hover{filter:brightness(1.16)}.views{display:grid;grid-template-columns:1fr 1fr;gap:17px;margin-top:17px}.panel{background:var(--panel);border:1px solid var(--border);border-radius:13px;overflow:hidden}.panel h2{font-size:19px;margin:0;padding:14px 17px 2px}.sub{color:var(--muted);font-size:14px;margin:0;padding:0 17px 6px}.scene{display:block;width:100%;height:auto}.stats{display:flex;justify-content:center;gap:23px;flex-wrap:wrap;padding:10px 15px 15px;font-size:14px;color:var(--muted)}.stats strong{color:var(--text);font-variant-numeric:tabular-nums}.note{margin-top:14px;border:1px solid var(--border);border-radius:11px;padding:12px 15px;color:var(--muted);font-size:14px;line-height:1.5}.note strong{color:var(--text)}.key{color:var(--cyan)}@media(max-width:920px){.controls{grid-template-columns:1fr 1fr}.control:first-child{grid-column:1/-1}.views{grid-template-columns:1fr}}@media(max-width:530px){.controls{grid-template-columns:1fr}.control:first-child{grid-column:auto}main{padding:10px}header{padding:14px}}
+</style></head><body><header><h1>Apparent Motion Lab</h1><p>Science 9 · Compare Earth's rotation with the Sun's apparent motion</p></header><main>
+<section class="controls">
+<div class="control"><label for="clock">Time of day <output id="timeRead">8:00 AM</output></label><input type="range" id="clock" min="0" max="1439" step="1" value="480"><div class="buttons"><button id="play" class="primary">▶ Play</button><button id="reset">↺ Reset</button></div></div>
+<div class="control"><label for="latitude">Observer latitude <output id="latRead">48° N</output></label><input type="range" id="latitude" min="-75" max="75" step="1" value="48"><small style="color:var(--muted)">South ← Equator → North</small></div>
+<div class="control"><label for="season">Time of year</label><select id="season"><option value="winter">December solstice</option><option value="march">March equinox</option><option value="summer">June solstice</option><option value="september">September equinox</option></select></div>
+</section>
+<section class="views"><article class="panel"><h2>View from space</h2><p class="sub">Earth moves around the Sun while its axis keeps pointing in the same direction. The <span class="key">blue observer</span> rotates with Earth.</p><canvas id="space" class="scene" width="660" height="500" aria-label="Four orbital positions around the Sun and enlarged rotating Earth with fixed tilted axis and latitude observer"></canvas></article><article class="panel"><h2>View from the ground</h2><p class="sub">Sun's height above or below the observer's horizon during the day. The sky darkens when it is night.</p><canvas id="ground" class="scene" width="660" height="440" aria-label="Sun's daily height curve showing daylight and night"></canvas><div class="stats"><span>Daylight: <strong id="dayLength">—</strong></span><span>Sunrise: <strong id="sunrise">—</strong></span><span>Sunset: <strong id="sunset">—</strong></span></div></article></section>
+<div class="note"><strong>Investigate:</strong> Compare the daylight hours for different latitudes in December, March, June, and September. Follow the observer as Earth rotates. How do the Sun's path and the length of the day change?<p style="margin:7px 0 0">Simplified model: 24-hour solar day, fixed axial tilt, ideal horizon and no atmospheric refraction. Earth, Sun and distances are not to scale. Local solar noon is 12:00 PM. The orbit view is schematic and shows the four seasonal positions, not the scale or duration of the orbit; the sky graph shows the Sun's altitude over time rather than its compass bearing.</p></div>
+</main>
+<script>
+'use strict';
+const $=q=>document.querySelector(q),clock=$('#clock'),latSlider=$('#latitude'),season=$('#season'),play=$('#play');
+const space=$('#space').getContext('2d'),ground=$('#ground').getContext('2d');
+let minutes=480,playing=false,prev=null;
+const PI=Math.PI,rad=PI/180,TILT=23.5*rad;
+function v(x,y,z){return [x,y,z]}function dot(a,b){return a[0]*b[0]+a[1]*b[1]+a[2]*b[2]}function add(a,b){return a.map((x,i)=>x+b[i])}function mult(a,k){return a.map(x=>x*k)}function norm(a){let d=Math.sqrt(dot(a,a));return mult(a,1/d)}function cross(a,b){return [a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]]}
+// Earth keeps a constant axial direction while changing its orbital position.
+// In this model +x points toward the northern end of Earth's tilted axis.
+const AXIS=norm(v(Math.sin(TILT),Math.cos(TILT),0));
+const SEASONS={
+ winter:{sun:v(-1,0,0),orbit:[1,0],name:'December solstice'},
+ march:{sun:v(0,0,1),orbit:[0,-1],name:'March equinox'},
+ summer:{sun:v(1,0,0),orbit:[-1,0],name:'June solstice'},
+ september:{sun:v(0,0,-1),orbit:[0,1],name:'September equinox'}
+};
+function current(){
+ let lat=Number(latSlider.value)*rad, which=SEASONS[season.value], sun=which.sun;
+ let axis=AXIS,decl=Math.asin(dot(axis,sun));
+ let noon=norm(add(sun,mult(axis,-dot(sun,axis))));let east=cross(axis,noon);
+ let hour=(minutes/60-12)*PI/12;
+ let facing=add(mult(axis,Math.sin(lat)),mult(add(mult(noon,Math.cos(hour)),mult(east,Math.sin(hour))),Math.cos(lat)));
+ let altitude=Math.asin(Math.max(-1,Math.min(1,dot(facing,sun))));
+ let c=-Math.tan(lat)*Math.tan(decl);let daylight=c<=-1?24:c>=1?0:24*Math.acos(c)/PI;
+ return {axis,noon,east,facing,lat,decl,altitude,daylight,hour,sun,which};
+}
+function fmt(mins){mins=((Math.floor(mins)%1440)+1440)%1440;let h=Math.floor(mins/60),m=mins%60;return `${h%12||12}:${String(m).padStart(2,'0')} ${h<12?'AM':'PM'}`}
+function circle(ctx,x,y,r,fill){ctx.beginPath();ctx.arc(x,y,r,0,2*PI);ctx.fillStyle=fill;ctx.fill()}
+function segment(ctx,x,y,xx,yy,color,width=1,dash=[]){ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(xx,yy);ctx.setLineDash(dash);ctx.lineWidth=width;ctx.strokeStyle=color;ctx.stroke();ctx.setLineDash([])}
+function label(ctx,s,x,y,color='#d0e0ed',size=14,align='center'){ctx.fillStyle=color;ctx.font=`${size}px system-ui`;ctx.textAlign=align;ctx.fillText(s,x,y)}
+function draw3DLine(points,stroke,width=1,dashed=false){space.beginPath();let active=false;for(let p of points){if(p[2]<-.015){active=false;continue}let x=CX+R*p[0],y=CY-R*p[1];if(!active){space.moveTo(x,y);active=true}else space.lineTo(x,y)}space.strokeStyle=stroke;space.lineWidth=width;space.setLineDash(dashed?[4,5]:[]);space.stroke();space.setLineDash([])}
+let CX=478,CY=292,R=118;
+function drawSpace(m){
+ const c=space,w=660,h=500;
+ c.clearRect(0,0,w,h);
+ let bg=c.createLinearGradient(0,0,w,h);bg.addColorStop(0,'#0d1a2d');bg.addColorStop(1,'#1b293c');
+ c.fillStyle=bg;c.fillRect(0,0,w,h);
+ // Orbital overview: four Earth positions and a truly fixed axis direction.
+ label(c,'ONE YEAR: EARTH ORBITS THE SUN',167,35,'#d3e5f2',13);
+ const ox=163,oy=172,rx=111,ry=82;
+ c.beginPath();c.ellipse(ox,oy,rx,ry,0,0,2*PI);c.strokeStyle='#9cb5cb88';c.lineWidth=1.7;c.stroke();
+ let halo=c.createRadialGradient(ox,oy,4,ox,oy,42);halo.addColorStop(0,'#ffe7a3aa');halo.addColorStop(1,'#ffce6700');circle(c,ox,oy,42,halo);circle(c,ox,oy,22,'#f5bb56');
+ label(c,'Sun',ox,oy+42,'#ffdda4',13);
+ for (const [key,data] of Object.entries(SEASONS)){
+  let x=ox+data.orbit[0]*rx,y=oy+data.orbit[1]*ry;
+  let chosen=season.value===key;
+  if(chosen){circle(c,x,y,23,'#efc17229');c.beginPath();c.arc(x,y,21,0,2*PI);c.strokeStyle='#f8cf83';c.lineWidth=2;c.stroke()}
+  circle(c,x,y,13,chosen?'#58a6cf':'#3b6d8c');
+  segment(c,x-AXIS[0]*19,y+AXIS[1]*19,x+AXIS[0]*19,y-AXIS[1]*19,'#ffd59c',2);
+  let ty=key==='march'?y-28:key==='september'?y+36:y+33;
+  label(c, key==='winter'?'Dec':key==='march'?'Mar':key==='summer'?'Jun':'Sep',x,ty,chosen?'#ffdc91':'#cbdce9',13);
+ }
+ label(c,'Selected: '+m.which.name,167,323,'#ffdca3',14);
+ label(c,'Axes remain parallel',167,350,'#bdd3e5',12);
+ // Enlarged globe uses exactly the selected Sun-to-Earth direction.
+ label(c,'ENLARGED EARTH',CX,72,'#d3e5f2',14);
+ const pos=m.facing,x=CX+R*pos[0],y=CY-R*pos[1],visible=pos[2]>=0;
+ if(!visible){
+  c.save();
+  c.globalAlpha=0.38;
+  circle(c,x,y,10,'#a3e7ff');
+  circle(c,x,y,4,'#18374c');
+  c.restore();
+ }
+ let grad=c.createRadialGradient(CX-30,CY-44,7,CX,CY,R*1.1);
+ grad.addColorStop(0,'rgba(56,142,183,0.82)');grad.addColorStop(1,'rgba(23,54,79,0.82)');circle(c,CX,CY,R,grad);
+ c.save();c.beginPath();c.arc(CX,CY,R,0,2*PI);c.clip();
+ // Day/night shading projected on the spherical surface.
+ let image=c.getImageData(CX-R,CY-R,2*R,2*R);
+ for(let py=0;py<2*R;py++)for(let px=0;px<2*R;px++){
+  let nx=(px-R)/R,ny=(R-py)/R,r2=nx*nx+ny*ny;
+  if(r2>1)continue;
+  let nz=Math.sqrt(1-r2), illum=nx*m.sun[0]+ny*m.sun[1]+nz*m.sun[2];
+  let dark=illum<0?Math.min(.72,.34-.38*illum):0;
+  let i=(py*(2*R)+px)*4;
+  image.data[i]*=(1-dark);image.data[i+1]*=(1-dark);image.data[i+2]*=(1-dark);
+  image.data[i+3]=Math.round(image.data[i+3]*0.92);
+ }
+ c.putImageData(image,CX-R,CY-R);
+ for(let latitude of [-60,-30,0,30,60]){
+  let a=latitude*rad,arr=[];
+  for(let i=0;i<=180;i++){let t=i*2*PI/180;arr.push(add(mult(m.axis,Math.sin(a)),mult(add(mult(m.noon,Math.cos(t)),mult(m.east,Math.sin(t))),Math.cos(a))))}
+  draw3DLine(arr,latitude===0?'#d5ecfc77':'#b1dcf53b',latitude===0?2:1);
+ }
+ for(let j=0;j<12;j++){
+  let a=j*PI/6+m.hour,arr=[];
+  for(let k=-90;k<=90;k+=2){let q=k*rad;arr.push(add(mult(m.axis,Math.sin(q)),mult(add(mult(m.noon,Math.cos(a)),mult(m.east,Math.sin(a))),Math.cos(q))))}
+  draw3DLine(arr,'#a8daf04b',1);
+ }
+ c.restore();
+ const ax=m.axis;
+ segment(c,CX-ax[0]*R*1.34,CY+ax[1]*R*1.34,CX+ax[0]*R*1.34,CY-ax[1]*R*1.34,'#ffd29d',2,[7,5]);
+ if(visible){circle(c,x,y,10,'#a3e7ff');circle(c,x,y,4,'#18374c')}
+ label(c,visible?'Observer':'Observer (far side)',x,y-19,'#abebff',12);
+ label(c,'Tilt: 23.5°',CX,461,'#ffddaa',13);
+ label(c,'Sunlight direction varies with season',167,395,'#c4d5e5',12);
+ label(c,'Observer remains attached to Earth',167,418,'#c4d5e5',12);
+}
+function solarAlt(hr,m){let H=(hr-12)*PI/12;return Math.asin(Math.max(-1,Math.min(1,Math.sin(m.lat)*Math.sin(m.decl)+Math.cos(m.lat)*Math.cos(m.decl)*Math.cos(H))))}
+function drawGround(m){let c=ground,w=660,h=440;c.clearRect(0,0,w,h);const L=64,U=37,B=336,RIGHT=625;let at=m.altitude;
+let baseSky=c.createLinearGradient(0,0,0,B);baseSky.addColorStop(0,'#1a3a5c');baseSky.addColorStop(1,'#4683a9');c.fillStyle=baseSky;c.fillRect(0,0,w,B);
+let nightAmount=Math.max(0,Math.min(1,(-at+6*rad)/(18*rad)));
+if(nightAmount>0){let overlay=c.createLinearGradient(0,0,0,B);overlay.addColorStop(0,`rgba(5,11,24,${0.82*nightAmount})`);overlay.addColorStop(1,`rgba(12,29,47,${0.9*nightAmount})`);c.fillStyle=overlay;c.fillRect(0,0,w,B)}
+c.fillStyle=nightAmount>.7?'#1c2d31':'#273d42';c.fillRect(0,B,w,h-B);
+function gx(t){return L+(RIGHT-L)*t/24}function gy(a){return B-(a*180/PI)*(B-U)/90}
+for(let deg of [0,30,60,90]){let y=gy(deg*rad);segment(c,L,y,RIGHT,y,deg===0?'#e0eee1':'#ffffff2d',deg===0?2:1,deg===0?[]:[4,7]);label(c,`${deg}°`,L-10,y+5,'#d4e1ec',12,'right')}
+for(let section of [0,1]){c.beginPath();let started=false;for(let t=0;t<=24;t+=.045){let a=solarAlt(t,m);let correct=(a>=0)===(section===0);if(!correct){started=false;continue}let x=gx(t),y=gy(a);if(!started){c.moveTo(x,y);started=true}else c.lineTo(x,y)}c.strokeStyle=section===0?'#ffe2a2':'#91a8b9aa';c.lineWidth=3;c.setLineDash(section===0?[]:[5,5]);c.stroke();c.setLineDash([])}
+c.save();c.beginPath();c.rect(0,B,w,h-B);c.clip();c.beginPath();for(let t=0;t<=24;t+=.05){let x=gx(t),y=gy(solarAlt(t,m));if(t===0)c.moveTo(x,y);else c.lineTo(x,y)}c.setLineDash([5,6]);c.strokeStyle='#98b2c3';c.lineWidth=2;c.stroke();c.restore();
+let x=gx(minutes/60),y=gy(at);segment(c,x,U,x,B,'#f5d89d6b',1,[4,5]);if(y>B){segment(c,x,B,x,Math.min(y,425),'#9ddaf477',1,[4,5]);circle(c,x,Math.min(y,424),8,'#b6d1e5');}else{let glow=c.createRadialGradient(x,y,4,x,y,44);glow.addColorStop(0,'#ffd16c99');glow.addColorStop(1,'#ffd16c00');circle(c,x,y,44,glow);circle(c,x,y,10,'#ffdc82')}
+for(let t=0;t<=24;t+=6)label(c,t===0?'12 AM':t===12?'12 PM':t===24?'12 AM':t<12?`${t} AM`:`${t-12} PM`,gx(t),B+27,'#d2e2ea',12);
+label(c,`Sun altitude: ${(at/rad).toFixed(1)}°`,w/2,413,'#e2ebf5',16);
+}
+function render(){let m=current();clock.value=Math.floor(minutes);$('#timeRead').textContent=fmt(minutes);$('#latRead').textContent=`${Math.abs(Math.round(m.lat/rad))}° ${m.lat<0?'S':m.lat>0?'N':''}`;$('#dayLength').textContent=`${Math.floor(m.daylight)} h ${String(Math.round((m.daylight%1)*60)).padStart(2,'0')} min`;$('#sunrise').textContent=m.daylight>=24?'No sunset':m.daylight<=0?'No sunrise':fmt((12-m.daylight/2)*60);$('#sunset').textContent=m.daylight>=24?'No sunset':m.daylight<=0?'No sunset':fmt((12+m.daylight/2)*60);drawSpace(m);drawGround(m)}
+clock.addEventListener('input',()=>{minutes=Number(clock.value);render()});latSlider.addEventListener('input',render);season.addEventListener('change',render);
+play.addEventListener('click',()=>{playing=!playing;play.textContent=playing?'❚❚ Pause':'▶ Play';prev=null});
+$('#reset').addEventListener('click',()=>{playing=false;play.textContent='▶ Play';prev=null;minutes=480;latSlider.value=48;season.value='winter';render()});
+function tick(now){if(playing){if(prev!==null)minutes=(minutes+Math.min((now-prev)/1000,.1)*80)%1440;prev=now;render()}else prev=null;requestAnimationFrame(tick)}
+render();requestAnimationFrame(tick);
+</script></body></html>
