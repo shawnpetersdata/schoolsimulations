@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Balancing and Reaction Type Worksheet 2 | School Simulations</title>
+<style>
+:root{--bg:#11151a;--panel:#1b222a;--panel2:#242d36;--text:#e7edf2;--muted:#a7b4c0;--accent:#d7923b;--border:#34404c;--good:#65c697;--bad:#ff727c}
+*[hidden]{display:none!important}*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#0e1216,#151b21);color:var(--text);font:16px/1.45 system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}button{font:inherit;cursor:pointer}button:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:3px}.shell{width:min(1170px,calc(100% - 32px));margin:auto;padding:26px 0 40px}.topline{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.eyebrow{font-size:.75rem;letter-spacing:.13em;text-transform:uppercase;color:var(--accent);font-weight:800}h1{font-size:clamp(1.45rem,3.1vw,2.1rem);margin:5px 0 3px;letter-spacing:-.035em}p{margin:0}.intro{color:var(--muted);margin-bottom:23px}.tag{border:1px solid var(--border);padding:6px 11px;border-radius:20px;font-size:.8rem;color:var(--muted)}.nav{display:grid;grid-template-columns:repeat(16,minmax(0,1fr));gap:8px;margin:15px 0 22px}.nav button{border:1px solid var(--border);background:var(--panel);color:var(--text);height:44px;border-radius:9px;font-weight:700}.nav button:hover{border-color:var(--accent)}.nav button.active{background:var(--accent);border-color:var(--accent);color:#17130f}.nav button.solved:not(.active){border-color:var(--good);color:var(--good)}.panel{border:1px solid var(--border);background:var(--panel);border-radius:16px;box-shadow:0 12px 36px #0002}.activity{padding:clamp(17px,3.5vw,34px)}.heading{display:flex;justify-content:space-between;align-items:start;gap:15px;flex-wrap:wrap;margin-bottom:17px}.qmeta{color:var(--accent);font-weight:800;font-size:.82rem;letter-spacing:.08em;text-transform:uppercase}.heading h2{margin:3px 0;font-size:1.28rem}.switches{display:flex;gap:10px;flex-wrap:wrap}.toggle{display:flex;align-items:center;gap:8px;background:var(--panel2);border:1px solid var(--border);border-radius:9px;padding:9px 12px;cursor:pointer;color:var(--text);font-size:.88rem;user-select:none}.toggle input{accent-color:var(--accent);width:16px;height:16px}.equation{display:flex;justify-content:center;align-items:center;gap:12px;flex-wrap:wrap;min-height:190px;padding:20px 12px;background:#111920;border:1px solid #30404c;border-radius:13px}.side{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px}.term{display:flex;gap:9px;align-items:center;padding:11px 12px;border:1px solid #40505f;background:#1b2630;border-radius:12px;min-height:107px}.controls{display:flex;flex-direction:column;align-items:center;gap:3px}.stepper{width:32px;height:29px;background:#344352;border:1px solid #586878;border-radius:7px;color:white;font-size:1.25rem;line-height:1}.stepper:hover:not(:disabled){background:#53677b}.stepper:disabled{opacity:.3;cursor:not-allowed}.coefficient{font-size:1.45rem;min-width:24px;text-align:center;font-weight:800;font-variant-numeric:tabular-nums;color:var(--accent)}.species{min-width:62px;text-align:center}.formula{white-space:nowrap;font-size:clamp(1.1rem,2vw,1.38rem);font-weight:650;letter-spacing:.01em}.formula sub,.graphic sub{font-size:.63em;line-height:0}.graphic{font-size:.97rem;font-weight:550;line-height:1.8;max-width:240px;word-break:normal}.graph-unit{display:inline-block;background:#344450;border:1px solid #526779;border-radius:6px;padding:0 5px;margin:2px 0}.graph-dash{color:var(--accent);margin:0 3px}.plus,.reaction-arrow{color:#c1ccd5;font-size:1.6rem;font-weight:450}.reaction-arrow{color:var(--accent);font-size:2.25rem;padding:0 3px}.under{margin-top:22px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;align-items:center}.actions{display:flex;gap:9px;flex-wrap:wrap}.primary,.secondary{border-radius:9px;padding:10px 16px;font-weight:700}.primary{background:var(--accent);color:#15120d;border:1px solid var(--accent)}.primary:hover{filter:brightness(1.1)}.secondary{background:transparent;border:1px solid #566777;color:var(--text)}.secondary:hover{background:var(--panel2)}.feedback{font-weight:650;min-height:23px}.feedback.good{color:var(--good)}.feedback.bad{color:var(--bad)}.counts{margin-top:17px;display:grid;grid-template-columns:1fr 68px 1fr;gap:10px;align-items:start}.countcol{background:#111920;border:1px solid var(--border);border-radius:12px;padding:15px;min-height:110px}.counttitle{font-size:.8rem;color:var(--muted);font-weight:750;letter-spacing:.08em;text-transform:uppercase;margin-bottom:9px}.countgrid{display:flex;flex-direction:column;gap:7px}.atomcount{width:100%}.atomcount{border:1px solid #344655;border-radius:7px;background:#27343f;padding:6px 8px;font-size:.93rem;white-space:nowrap;transition:background .2s}.atomcount strong{font-variant-numeric:tabular-nums}.arrowmid{text-align:center;color:var(--accent);font-size:2rem;margin-top:47px}.note{font-size:.79rem;color:var(--muted);margin:11px 2px 0}.bottomnav{display:flex;justify-content:space-between;gap:12px;margin-top:18px}.badflash{animation:flash .42s ease-in-out 0s 3}@keyframes flash{0%,100%{background:#27343f;border-color:#344655;color:var(--text)}50%{background:#a9293c;border-color:#ff808d;color:#fff}}.reaction{display:flex;align-items:center;gap:11px;flex-wrap:wrap;margin-top:20px}.reaction label{font-size:.92rem;font-weight:700}.reaction select{background:#111920;color:var(--text);border:1px solid #586878;padding:9px 12px;border-radius:8px;font:inherit}.reaction .response{font-size:.85rem}.footer{margin-top:20px;color:var(--muted);font-size:.78rem}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}@media(max-width:850px){.nav{grid-template-columns:repeat(8,1fr)}.counts{grid-template-columns:1fr 34px 1fr;gap:5px}.countcol{padding:10px}.arrowmid{font-size:1.3rem}}@media(max-width:550px){.shell{width:calc(100% - 20px)}.nav{grid-template-columns:repeat(8,1fr);gap:5px}.nav button{height:38px}.equation{gap:10px;padding:15px 7px}.term{padding:6px;gap:5px;min-height:89px}.stepper{width:28px;height:25px}.formula{font-size:1.08rem}.counts{grid-template-columns:1fr}.arrowmid{margin:0;transform:rotate(90deg)}.countgrid{display:flex;flex-direction:column}.bottomnav{gap:8px}}
+@media(prefers-reduced-motion:reduce){.badflash{animation-duration:.8s;animation-iteration-count:1}}
+.graphics{margin-top:18px;background:#111920;border:1px solid var(--border);border-radius:12px;padding:16px;overflow-x:auto}.visual-title{font-size:.8rem;color:var(--muted);font-weight:750;text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px}.visual-body{display:grid;grid-template-columns:minmax(0,1fr) 40px minmax(0,1fr);gap:12px;align-items:start}.visual-side{min-width:0}.visual-columns{display:flex;align-items:flex-start;gap:12px;overflow-x:auto;padding:3px 0 8px}.visual-term{flex:0 0 auto;min-width:90px;padding:4px 2px}.visual-molecules{display:flex;flex-direction:column;align-items:flex-start;gap:6px}.visual-molecule{display:flex;align-items:center;flex-wrap:nowrap;gap:2px;font-size:.96rem;min-height:27px;white-space:nowrap}.visual-arrow{align-self:center;text-align:center;font-size:2rem;color:var(--accent)}.visual-molecule .graph-unit{margin:0}.visual-molecule .graph-dash{margin:0 1px}@media(max-width:550px){.visual-body{grid-template-columns:minmax(0,1fr) 20px minmax(0,1fr);gap:5px}.graphics{padding:9px}.visual-columns{gap:6px}.visual-term{min-width:65px}.visual-arrow{font-size:1.25rem}.visual-molecule{font-size:.82rem}.visual-molecule .graph-unit{padding:0 3px}}
+</style>
+</head>
+<body>
+<main class="shell">
+<header><div class="topline"><div class="eyebrow">School Simulations · Chemistry</div><span class="tag">16 questions · Interactive practice</span></div><h1>Balancing and Reaction Type Worksheet 2</h1><p class="intro">Adjust coefficients, compare the two sides, and check your balancing. Each question matches the printed worksheet.</p></header>
+<nav id="questionNav" class="nav" aria-label="Choose a question"></nav>
+<section class="panel activity" aria-labelledby="questionTitle">
+ <div class="heading"><div><div class="qmeta" id="questionMeta">QUESTION 1 OF 16</div><h2 id="questionTitle">Balance the equation</h2></div><div class="switches"><label class="toggle"><input id="graphicToggle" type="checkbox">Graphic formulas</label><label class="toggle"><input id="countToggle" type="checkbox">Show counts</label></div></div>
+ <div id="equation" class="equation" aria-label="Chemical equation with adjustable coefficients"></div>
+ <div id="graphics" class="graphics" hidden></div>
+ <div class="under"><div class="actions"><button id="checkButton" class="primary" type="button">Check answer</button><button id="resetButton" class="secondary" type="button">Reset coefficients</button></div><div id="feedback" class="feedback" role="status" aria-live="polite"></div></div>
+ <div id="counts" class="counts" hidden></div>
+ <p id="countNote" class="note" hidden>Counts treat unchanged polyatomic ions as groups (including OH in HOH). Coefficients multiply the entire formula.</p>
+ <div class="reaction"><label for="reactionType">Reaction type</label><select id="reactionType"><option value="">Select a type…</option><option value="Composition">Composition</option><option value="Decomposition">Decomposition</option><option value="Single replacement">Single replacement</option><option value="Double replacement">Double replacement</option><option value="Combustion">Combustion</option><option value="Other">Other</option></select><button id="typeCheck" type="button" class="secondary">Check type</button><span id="typeFeedback" class="response" role="status" aria-live="polite"></span></div>
+</section>
+<div class="bottomnav"><button id="previous" class="secondary" type="button">← Previous question</button><button id="next" class="secondary" type="button">Next question →</button></div>
+<p class="footer">The graphic view is a counting aid, not a depiction of chemical bonds or molecular structure. Coefficients are limited to 1–30. Your progress stays on this page until it is refreshed.</p>
+</main>
+<script>
+'use strict';
+// Formulas and order transcribed from the final 16-question Worksheet 2.
+const questions = [
+ {r:['AgI','Na2S'],p:['Ag2S','NaI'],groups:[],type:'Double replacement'},
+ {r:['NaBr','Cl2'],p:['NaCl','Br2'],groups:[],type:'Single replacement'},
+ {r:['Zn','HCl'],p:['ZnCl2','H2'],groups:[],type:'Single replacement'},
+ {r:['N2','H2'],p:['NH3'],groups:[],type:'Composition'},
+ {r:['Al','HCl'],p:['AlCl3','H2'],groups:[],type:'Single replacement'},
+ {r:['SnO2','H2'],p:['Sn','H2O'],groups:[],type:'Single replacement'},
+ {r:['Al','O2'],p:['Al2O3'],groups:[],type:'Composition'},
+ {r:['CH4','O2'],p:['CO2','H2O'],groups:[],type:'Combustion'},
+ {r:['Na3PO4','HCl'],p:['NaCl','H3PO4'],groups:['PO4'],type:'Double replacement'},
+ {r:['CaCl2','Na3PO4'],p:['Ca3(PO4)2','NaCl'],groups:['PO4'],type:'Double replacement'},
+ {r:['Mg(OH)2','HCl'],p:['MgCl2','HOH'],groups:['OH'],type:'Double replacement'},
+ {r:['TiCl4','H2O'],p:['TiO2','HCl'],groups:[],type:'Double replacement'},
+ {r:['SiCl4','H2O'],p:['SiO2','HCl'],groups:[],type:'Double replacement'},
+ {r:['Hg(OH)2','H3PO4'],p:['Hg3(PO4)2','HOH'],groups:['OH','PO4'],type:'Double replacement'},
+ {r:['KOH','H3PO4'],p:['K3PO4','HOH'],groups:['OH','PO4'],type:'Double replacement'},
+ {r:['KNO3','H2CO3'],p:['K2CO3','HNO3'],groups:['NO3','CO3'],type:'Double replacement'}
+];
+const $=id=>document.getElementById(id);
+let current=0;
+const coefficients=questions.map(q=>Array(q.r.length+q.p.length).fill(1));
+const solved=Array(questions.length).fill(false);
+const elOrder=['Ag','I','Na','S','Br','Cl','Zn','H','N','Al','Sn','O','C','Ca','Mg','Ti','Si','Hg','K','PO4','OH','NO3','CO3'];
+function subHTML(s){return s.replace(/(\d+)/g,'<sub>$1</sub>');}
+function parseUnits(formula,groups){
+ // Recursive composition parser. Recognized polyatomic ions are one unit.
+ const all=[...groups].sort((a,b)=>b.length-a.length);
+ let index=0;
+ function sequence(){
+  const tokens=[];
+  while(index<formula.length&&formula[index]!==')'){
+   if(formula[index]==='('){index++;const inside=sequence();if(formula[index]!==')')throw Error('Unclosed group');index++;const n=readNum();for(let j=0;j<n;j++)tokens.push(...inside);continue;}
+   let key=all.find(g=>formula.startsWith(g,index));
+   if(!key){const m=/^[A-Z][a-z]?/.exec(formula.slice(index));if(!m)throw Error('Invalid formula '+formula);key=m[0];}
+   index+=key.length;const n=readNum();for(let j=0;j<n;j++)tokens.push(key);
+  }
+  return tokens;
+ }
+ function readNum(){const m=/^\d+/.exec(formula.slice(index));if(!m)return 1;index+=m[0].length;return +m[0];}
+ const result=sequence();if(index!==formula.length)throw Error('Invalid formula '+formula);return result;
+}
+function totals(side,coeffs,offset,q){const counts={};side.forEach((formula,i)=>{parseUnits(formula,q.groups).forEach(key=>{counts[key]=(counts[key]||0)+coeffs[offset+i];});});return counts;}
+function comparison(){const q=questions[current],c=coefficients[current],r=totals(q.r,c,0,q),p=totals(q.p,c,q.r.length,q);const keys=[...new Set([...Object.keys(r),...Object.keys(p)])].sort((a,b)=>elOrder.indexOf(a)-elOrder.indexOf(b));return {r,p,keys,bad:keys.filter(k=>(r[k]||0)!==(p[k]||0))};}
+function formulaGraphic(formula,q){const units=parseUnits(formula,q.groups);return units.map(u=>`<span class="graph-unit">${subHTML(u)}</span>`).join('<span class="graph-dash">–</span>');}
+function makeTerm(formula,index,q){const value=coefficients[current][index];
+ const wrapper=document.createElement('div');wrapper.className='term';
+ wrapper.innerHTML=`<div class="controls"><button class="stepper" data-change="1" aria-label="Increase coefficient for ${formula}" ${value>=30?'disabled':''}>+</button><span class="coefficient" aria-label="Coefficient ${value}">${value}</span><button class="stepper" data-change="-1" aria-label="Decrease coefficient for ${formula}" ${value<=1?'disabled':''}>−</button></div><div class="species"><div class="formula">${subHTML(formula)}</div></div>`;
+ wrapper.querySelectorAll('[data-change]').forEach(btn=>btn.addEventListener('click',()=>{coefficients[current][index]=Math.min(30,Math.max(1,value+ +btn.dataset.change));solved[current]=false;clearFeedback();renderEquation();renderGraphics();renderCounts();renderNav();}));return wrapper;
+}
+function makeSide(formulas,start,q){const side=document.createElement('div');side.className='side';formulas.forEach((formula,i)=>{if(i){const plus=document.createElement('span');plus.className='plus';plus.textContent='+';side.append(plus);}side.append(makeTerm(formula,start+i,q));});return side;}
+function renderEquation(){const q=questions[current];const eq=$('equation');eq.replaceChildren();eq.append(makeSide(q.r,0,q));const arrow=document.createElement('span');arrow.className='reaction-arrow';arrow.textContent='→';eq.append(arrow,makeSide(q.p,q.r.length,q));}
+function renderGraphics(){
+ const root=$('graphics'),show=$('graphicToggle').checked;
+ root.hidden=!show;
+ if(!show)return;
+ const q=questions[current],c=coefficients[current];
+ root.replaceChildren();
+ const title=document.createElement('div');title.className='visual-title';title.textContent='Graphic representation · counting model';root.append(title);
+ const body=document.createElement('div');body.className='visual-body';
+ for(const [heading,items,offset] of [['Reactants',q.r,0],['Products',q.p,q.r.length]]){
+  const side=document.createElement('div');side.className='visual-side';
+  const headingEl=document.createElement('div');headingEl.className='counttitle';headingEl.textContent=heading;side.append(headingEl);
+  const columns=document.createElement('div');columns.className='visual-columns';
+  items.forEach((formula,i)=>{
+   const count=c[offset+i],term=document.createElement('div');term.className='visual-term';
+   term.setAttribute('aria-label',`${count} representations of ${formula}`);
+   const molecules=document.createElement('div');molecules.className='visual-molecules';
+   for(let n=0;n<count;n++){
+    const molecule=document.createElement('div');molecule.className='visual-molecule';
+    molecule.innerHTML=formulaGraphic(formula,q);molecules.append(molecule);
+   }
+   term.append(molecules);columns.append(term);
+  });side.append(columns);body.append(side);
+  if(offset===0){const arrow=document.createElement('div');arrow.className='visual-arrow';arrow.textContent='→';body.append(arrow);}
+ }
+ root.append(body);
+}
+function renderCounts(){const show=$('countToggle').checked;$('counts').hidden=!show;$('countNote').hidden=!show;if(!show)return;const {r,p,keys}=comparison();const root=$('counts');root.replaceChildren();for(const [title,counts] of [['Reactants',r],['Products',p]]){const col=document.createElement('div');col.className='countcol';col.innerHTML=`<div class="counttitle">${title}</div><div class="countgrid">${keys.map(k=>`<div class="atomcount" data-key="${k}">${subHTML(k)}: <strong>${counts[k]||0}</strong></div>`).join('')}</div>`;if(title==='Reactants'){root.append(col);const arrow=document.createElement('div');arrow.className='arrowmid';arrow.textContent='→';root.append(arrow);}else root.append(col);}}
+function clearFeedback(){$('feedback').textContent='';$('feedback').className='feedback';}
+function renderNav(){const nav=$('questionNav');nav.replaceChildren();questions.forEach((_,i)=>{const btn=document.createElement('button');btn.type='button';btn.textContent=i+1;btn.setAttribute('aria-label','Question '+(i+1));btn.className=(i===current?'active ':'')+(solved[i]?'solved':'');if(i===current)btn.setAttribute('aria-current','step');btn.addEventListener('click',()=>goTo(i));nav.append(btn);});}
+function goTo(i){if(i<0||i>=questions.length)return;current=i;$('questionMeta').textContent=`QUESTION ${i+1} OF ${questions.length}`;$('reactionType').value='';$('typeFeedback').textContent='';clearFeedback();renderNav();renderEquation();renderGraphics();renderCounts();$('previous').disabled=i===0;$('next').disabled=i===questions.length-1;}
+$('checkButton').addEventListener('click',()=>{const {bad}=comparison();renderCounts();if(!bad.length){solved[current]=true;$('feedback').className='feedback good';$('feedback').textContent='Balanced! Both sides match.';renderNav();return;}$('feedback').className='feedback bad';$('feedback').textContent='Not balanced yet. Check the highlighted counts.';
+ // Show counts temporarily when hidden so every learner can see the mismatches.
+ if(!$('countToggle').checked){$('countToggle').checked=true;renderCounts();}
+ for(const element of $('counts').querySelectorAll('.atomcount')){if(bad.includes(element.dataset.key)){element.classList.remove('badflash');void element.offsetWidth;element.classList.add('badflash');}}
+});
+$('resetButton').addEventListener('click',()=>{coefficients[current].fill(1);solved[current]=false;clearFeedback();renderEquation();renderGraphics();renderCounts();renderNav();});
+$('graphicToggle').addEventListener('change',renderGraphics);
+$('countToggle').addEventListener('change',renderCounts);
+$('previous').addEventListener('click',()=>goTo(current-1));
+$('next').addEventListener('click',()=>goTo(current+1));
+$('typeCheck').addEventListener('click',()=>{const selected=$('reactionType').value;const out=$('typeFeedback');if(!selected){out.style.color='var(--muted)';out.textContent='Select a reaction type first.';return;}const matches=selected===questions[current].type;out.style.color=matches?'var(--good)':'var(--bad)';out.textContent=matches?'Correct reaction type.':'Try another classification.';});
+goTo(0);
+</script>
+</body>
+</html>

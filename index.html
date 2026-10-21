@@ -1,18 +1,1003 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="Interactive classroom simulations and activities in astronomy, physics, energy, and biology."><title>School Simulations</title><style>
-:root{--bg:#11151a;--panel:#1b222a;--hover:#242d36;--text:#e7edf2;--muted:#a4b2bf;--accent:#d7923b;--border:#303a45}*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#0e1216,#151b21);color:var(--text);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}a{color:inherit}.skip{position:absolute;top:-100px;left:12px;padding:12px;background:var(--panel);z-index:3}.skip:focus{top:12px}header,main,footer{width:min(1120px,92%);margin:auto}header{padding:48px 0 26px}.eyebrow{color:var(--accent);font-size:.78rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase}h1{font-size:clamp(2rem,5vw,3.2rem);margin:10px 0}header p{max-width:680px;line-height:1.65;color:var(--muted);margin:0}.tools{padding:22px;background:#171e25;border:1px solid var(--border);border-radius:14px}.search-label{display:block;font-weight:600;font-size:.9rem;margin-bottom:9px}.search-wrap{display:flex;gap:10px}input[type=search]{width:100%;padding:13px 15px;background:#10161c;border:1px solid #485462;border-radius:8px;color:var(--text);font:inherit}button{font:inherit;cursor:pointer;background:transparent;color:var(--text);border:1px solid #46515d;border-radius:7px;padding:10px 14px}button:hover{background:var(--hover)}button[aria-pressed=true]{background:#49331c;border-color:var(--accent);color:#ffcf92}button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #edb766;outline-offset:4px}.filters{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}.filters button{font-size:.88rem}.result-summary{font-size:.88rem;color:var(--muted);margin:15px 0 0}.category{margin-top:36px;--category:#d7923b}.category[data-category=sky]{--category:#9fbde8}.category[data-category=motion]{--category:#b7a9df}.category[data-category=bio]{--category:#9fcaad}.section-heading{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:16px;border-bottom:1px solid var(--border);padding-bottom:14px}.section-heading h2{font-size:1.45rem;margin:0 0 5px;color:var(--category)}.section-heading p{margin:0;color:var(--muted);font-size:.9rem}.section-count{white-space:nowrap;color:var(--muted);font-size:.82rem}.sim-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr));gap:16px}.sim-card{display:flex;flex-direction:column;max-width:100%;padding:21px;background:var(--panel);border:1px solid var(--border);border-radius:11px;text-decoration:none;transition:background .15s ease,border-color .15s ease}.sim-card:hover{background:var(--hover);border-color:var(--category)}.sim-card h3{font-size:1.15rem;margin:10px 0;line-height:1.35}.sim-card p{margin:0;color:var(--muted);line-height:1.55;font-size:.94rem}.card-tag{color:var(--category);font-size:.73rem;font-weight:650;letter-spacing:.04em;text-transform:uppercase}.open{margin-top:auto;padding-top:20px;font-size:.82rem;color:var(--category)}.open span{float:right}.empty{padding:45px 15px;text-align:center;color:var(--muted)}footer{padding:45px 0 30px;margin-top:30px;color:var(--muted);font-size:.82rem;border-top:1px solid var(--border)}[hidden]{display:none!important}@media(min-width:900px){.sim-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:540px){header{padding-top:30px}.tools{padding:16px}.section-heading p{line-height:1.5}.section-count{display:none}.search-wrap button{padding:9px}.filters{gap:7px}.filters button{padding:9px 10px}}@media(prefers-reduced-motion:reduce){*{transition:none!important}}
-</style></head><body><a class="skip" href="#activities">Skip to activities</a><header><div class="eyebrow">Explore · experiment · understand</div><h1>School Simulations</h1><p>Interactive simulations and activities for exploring science, mathematics, and technology. Choose a topic or search for an idea.</p></header><main><div class="tools"><label class="search-label" for="search">Find an activity</label><div class="search-wrap"><input id="search" type="search" placeholder="Try redshift, engines, motion…" autocomplete="off" aria-controls="activities"><button id="clear" type="button">Clear</button></div><div class="filters" role="group" aria-label="Filter by topic"><button type="button" data-filter="all" aria-pressed="true">All topics</button><button type="button" data-filter="sky" aria-pressed="false">Astronomy &amp; Space</button><button type="button" data-filter="motion" aria-pressed="false">Motion &amp; Forces</button><button type="button" data-filter="energy" aria-pressed="false">Power &amp; Energy</button><button type="button" data-filter="bio" aria-pressed="false">Biology</button></div><p class="result-summary" id="results" role="status" aria-live="polite">13 activities · 4 topics</p></div><div id="activities"><section class="category" data-category="sky" aria-labelledby="heading-sky"><div class="section-heading"><div><h2 id="heading-sky">Astronomy &amp; Space</h2><p>Observe patterns in the sky and explore the universe.</p></div><span class="section-count">5 activities</span></div><div class="sim-grid"><a class="sim-card" href="nebula-galaxy-sort/" data-search="astronomy &amp; space sorting nebulae and galaxies sort images and compare the features of nebulae and galaxies. science 9"><span class="card-tag">Science 9</span><h3>Sorting Nebulae and Galaxies</h3><p>Sort images and compare the features of nebulae and galaxies.</p><span class="open">Open activity <span aria-hidden="true">↗</span></span></a>
-<a class="sim-card" href="apparent-motion-sun/" data-search="astronomy &amp; space apparent motion of the sun investigate how the sun appears to move as earth rotates and orbits. science 9"><span class="card-tag">Science 9</span><h3>Apparent Motion of the Sun</h3><p>Investigate how the Sun appears to move as Earth rotates and orbits.</p><span class="open">Open activity <span aria-hidden="true">↗</span></span></a>
-<a class="sim-card" href="constellations/" data-search="astronomy &amp; space constellations throughout the year explore how the visible constellations change with time and season. science 9"><span class="card-tag">Science 9</span><h3>Constellations Throughout the Year</h3><p>Explore how the visible constellations change with time and season.</p><span class="open">Open activity <span aria-hidden="true">↗</span></span></a>
-<a class="sim-card" href="doppler/" data-search="astronomy &amp; space doppler effect &amp; redshift explore sound, light, and the redshift associated with an expanding universe. science 9"><span class="card-tag">Science 9</span><h3>Doppler Effect &amp; Redshift</h3><p>Explore sound, light, and the redshift associated with an expanding universe.</p><span class="open">Open activity <span aria-hidden="true">↗</span></span></a>
-<a class="sim-card" href="bigbang/" data-search="astronomy &amp; space expansion &amp; cyclic universe compare continued expansion with a hypothetical repeating cycle of expansion and contraction. science 9"><span class="card-tag">Science 9</span><h3>Expansion &amp; Cyclic Universe</h3><p>Compare continued expansion with a hypothetical repeating cycle of expansion and contraction.</p><span class="open">Open activity <span aria-hidden="true">↗</span></span></a>
-</div></section><section class="category" data-category="motion" aria-labelledby="heading-motion"><div class="section-heading"><div><h2 id="heading-motion">Motion &amp; Forces</h2><p>Investigate how objects move.</p></div><span class="section-count">1 activities</span></div><div class="sim-grid"><a class="sim-card" href="ramp/" data-search="motion &amp; forces kinematics ramp investigate position, velocity, and acceleration along an inclined ramp. physics"><span class="card-tag">Physics</span><h3>Kinematics Ramp</h3><p>Investigate position, velocity, and acceleration along an inclined ramp.</p><span class="open">Open activity <span aria-hidden="true">↗</span></span></a>
-</div></section><section class="category" data-category="energy" aria-labelledby="heading-energy"><div class="section-heading"><div><h2 id="heading-energy">Power &amp; Energy</h2><p>Explore how engines turn heat into motion.</p></div><span class="section-count">6 activities</span></div><div class="sim-grid"><a class="sim-card" href="steam-engine/" data-search="power &amp; energy steam engine explore how heat, steam pressure, throttle position, and load affect a steam engine. external combustion"><span class="card-tag">External combustion</span><h3>Steam Engine</h3><p>Explore how heat, steam pressure, throttle position, and load affect a steam engine.</p><span class="open">Open activity <span aria-hidden="true">↗</span></span></a>
-<a class="sim-card" href="stirling-engine/" data-search="power &amp; energy stirling engine use a temperature difference to heat and cool a sealed gas that drives a piston and flywheel. external combustion"><span class="card-tag">External combustion</span><h3>Stirling Engine</h3><p>Use a temperature difference to heat and cool a sealed gas that drives a piston and flywheel.</p><span class="open">Open activity <span aria-hidden="true">↗</span></span></a>
-<a class="sim-card" href="steam-turbine/" data-search="power &amp; energy steam turbine explore how high-pressure steam transfers momentum to turbine blades. external combustion"><span class="card-tag">External combustion</span><h3>Steam Turbine</h3><p>Explore how high-pressure steam transfers momentum to turbine blades.</p><span class="open">Open activity <span aria-hidden="true">↗</span></span></a>
-<a class="sim-card" href="2stroke/" data-search="power &amp; energy 2-stroke engine follow compression, ignition, power, exhaust, and fuel-air transfer through a two-stroke cycle. internal combustion"><span class="card-tag">Internal combustion</span><h3>2-Stroke Engine</h3><p>Follow compression, ignition, power, exhaust, and fuel-air transfer through a two-stroke cycle.</p><span class="open">Open activity <span aria-hidden="true">↗</span></span></a>
-<a class="sim-card" href="4stroke/" data-search="power &amp; energy 4-stroke gasoline engine explore the intake, compression, power, and exhaust strokes of a spark-ignition engine. internal combustion"><span class="card-tag">Internal combustion</span><h3>4-Stroke Gasoline Engine</h3><p>Explore the intake, compression, power, and exhaust strokes of a spark-ignition engine.</p><span class="open">Open activity <span aria-hidden="true">↗</span></span></a>
-<a class="sim-card" href="diesel/" data-search="power &amp; energy diesel engine explore how compression heats incoming air so injected fuel ignites without a spark plug. internal combustion"><span class="card-tag">Internal combustion</span><h3>Diesel Engine</h3><p>Explore how compression heats incoming air so injected fuel ignites without a spark plug.</p><span class="open">Open activity <span aria-hidden="true">↗</span></span></a>
-</div></section><section class="category" data-category="bio" aria-labelledby="heading-bio"><div class="section-heading"><div><h2 id="heading-bio">Biology</h2><p>Investigate the structures of living things.</p></div><span class="section-count">1 activities</span></div><div class="sim-grid"><a class="sim-card" href="flower-dissection/" data-search="biology flower dissection dissect a flower and sort its parts. biology"><span class="card-tag">Biology</span><h3>Flower Dissection</h3><p>Dissect a flower and sort its parts.</p><span class="open">Open activity <span aria-hidden="true">↗</span></span></a>
-</div></section></div><div class="empty" id="empty" hidden><p>No activities match your search.</p><button type="button" id="reset">Show all activities</button></div></main><footer>Interactive educational simulations · Made for classroom exploration</footer><script>
-'use strict';const search=document.getElementById('search'),sections=[...document.querySelectorAll('.category')],filters=[...document.querySelectorAll('[data-filter]')];let topic='all';function filterActivities(){const terms=search.value.trim().toLowerCase().split(/\s+/).filter(Boolean);let total=0,visibleTopics=0;for(const section of sections){let count=0;const matchesTopic=topic==='all'||section.dataset.category===topic;for(const card of section.querySelectorAll('.sim-card')){const match=matchesTopic&&terms.every(term=>card.dataset.search.includes(term));card.hidden=!match;if(match)count++;}section.hidden=count===0;section.querySelector('.section-count').textContent=count+' '+(count===1?'activity':'activities');total+=count;if(count)visibleTopics++;}document.getElementById('results').textContent=total+' '+(total===1?'activity':'activities')+' · '+visibleTopics+' '+(visibleTopics===1?'topic':'topics');document.getElementById('empty').hidden=total!==0;}function reset(){search.value='';topic='all';filters.forEach(b=>b.setAttribute('aria-pressed',b.dataset.filter==='all'));filterActivities();search.focus();}search.addEventListener('input',filterActivities);filters.forEach(button=>button.addEventListener('click',()=>{topic=button.dataset.filter;filters.forEach(b=>b.setAttribute('aria-pressed',b===button));filterActivities();}));document.getElementById('clear').addEventListener('click',()=>{search.value='';filterActivities();search.focus();});document.getElementById('reset').addEventListener('click',reset);filterActivities();
-</script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <meta name="description"
+          content="Interactive classroom simulations and activities in astronomy, physics, energy, biology, and chemistry.">
+
+    <title>School Simulations</title>
+
+    <style>
+        :root {
+            --bg: #11151a;
+            --panel: #1b222a;
+            --hover: #242d36;
+            --text: #e7edf2;
+            --muted: #a4b2bf;
+            --accent: #d7923b;
+            --border: #303a45;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background:
+                linear-gradient(180deg, #0e1216, #151b21);
+            color: var(--text);
+            font-family:
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+        }
+
+        a {
+            color: inherit;
+        }
+
+        .skip {
+            position: absolute;
+            top: -100px;
+            left: 12px;
+            padding: 12px;
+            background: var(--panel);
+            z-index: 3;
+        }
+
+        .skip:focus {
+            top: 12px;
+        }
+
+        header,
+        main,
+        footer {
+            width: min(1120px, 92%);
+            margin: auto;
+        }
+
+        header {
+            padding: 48px 0 26px;
+        }
+
+        .eyebrow {
+            color: var(--accent);
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.13em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            margin: 10px 0;
+        }
+
+        header p {
+            max-width: 680px;
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.65;
+        }
+
+        .tools {
+            padding: 22px;
+            background: #171e25;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+        }
+
+        .search-label {
+            display: block;
+            margin-bottom: 9px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .search-wrap {
+            display: flex;
+            gap: 10px;
+        }
+
+        input[type="search"] {
+            width: 100%;
+            padding: 13px 15px;
+            background: #10161c;
+            border: 1px solid #485462;
+            border-radius: 8px;
+            color: var(--text);
+            font: inherit;
+        }
+
+        button {
+            padding: 10px 14px;
+            background: transparent;
+            border: 1px solid #46515d;
+            border-radius: 7px;
+            color: var(--text);
+            font: inherit;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: var(--hover);
+        }
+
+        button[aria-pressed="true"] {
+            background: #49331c;
+            border-color: var(--accent);
+            color: #ffcf92;
+        }
+
+        button:focus-visible,
+        a:focus-visible,
+        input:focus-visible {
+            outline: 3px solid #edb766;
+            outline-offset: 4px;
+        }
+
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 9px;
+            margin-top: 16px;
+        }
+
+        .filters button {
+            font-size: 0.88rem;
+        }
+
+        .result-summary {
+            margin: 15px 0 0;
+            color: var(--muted);
+            font-size: 0.88rem;
+        }
+
+        .category {
+            --category: #d7923b;
+            margin-top: 36px;
+        }
+
+        .category[data-category="sky"] {
+            --category: #9fbde8;
+        }
+
+        .category[data-category="motion"] {
+            --category: #b7a9df;
+        }
+
+        .category[data-category="bio"] {
+            --category: #9fcaad;
+        }
+
+        .category[data-category="chem"] {
+            --category: #82cdd0;
+        }
+
+        .section-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-heading h2 {
+            margin: 0 0 5px;
+            color: var(--category);
+            font-size: 1.45rem;
+        }
+
+        .section-heading p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .section-count {
+            color: var(--muted);
+            font-size: 0.82rem;
+            white-space: nowrap;
+        }
+
+        .sim-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(min(100%, 270px), 1fr)
+                );
+            gap: 16px;
+        }
+
+        .sim-card {
+            display: flex;
+            flex-direction: column;
+            max-width: 100%;
+            padding: 21px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 11px;
+            text-decoration: none;
+            transition:
+                background 0.15s ease,
+                border-color 0.15s ease;
+        }
+
+        .sim-card:hover {
+            background: var(--hover);
+            border-color: var(--category);
+        }
+
+        .sim-card h3 {
+            margin: 10px 0;
+            font-size: 1.15rem;
+            line-height: 1.35;
+        }
+
+        .sim-card p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 0.94rem;
+            line-height: 1.55;
+        }
+
+        .card-tag {
+            color: var(--category);
+            font-size: 0.73rem;
+            font-weight: 650;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .open {
+            margin-top: auto;
+            padding-top: 20px;
+            color: var(--category);
+            font-size: 0.82rem;
+        }
+
+        .open span {
+            float: right;
+        }
+
+        .empty {
+            padding: 45px 15px;
+            color: var(--muted);
+            text-align: center;
+        }
+
+        footer {
+            margin-top: 30px;
+            padding: 45px 0 30px;
+            border-top: 1px solid var(--border);
+            color: var(--muted);
+            font-size: 0.82rem;
+        }
+
+        [hidden] {
+            display: none !important;
+        }
+
+        @media (min-width: 900px) {
+            .sim-grid {
+                grid-template-columns:
+                    repeat(3, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 540px) {
+            header {
+                padding-top: 30px;
+            }
+
+            .tools {
+                padding: 16px;
+            }
+
+            .section-heading p {
+                line-height: 1.5;
+            }
+
+            .section-count {
+                display: none;
+            }
+
+            .search-wrap button {
+                padding: 9px;
+            }
+
+            .filters {
+                gap: 7px;
+            }
+
+            .filters button {
+                padding: 9px 10px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                transition: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <a class="skip" href="#activities">
+        Skip to activities
+    </a>
+
+    <header>
+        <div class="eyebrow">
+            Explore · experiment · understand
+        </div>
+
+        <h1>School Simulations</h1>
+
+        <p>
+            Interactive simulations and activities for
+            exploring science, mathematics, and technology.
+            Choose a topic or search for an idea.
+        </p>
+    </header>
+
+    <main>
+        <div class="tools">
+            <label class="search-label" for="search">
+                Find an activity
+            </label>
+
+            <div class="search-wrap">
+                <input
+                    id="search"
+                    type="search"
+                    placeholder="Try redshift, engines, balancing…"
+                    autocomplete="off"
+                    aria-controls="activities">
+
+                <button id="clear" type="button">
+                    Clear
+                </button>
+            </div>
+
+            <div class="filters"
+                 role="group"
+                 aria-label="Filter by topic">
+
+                <button type="button"
+                        data-filter="all"
+                        aria-pressed="true">
+                    All topics
+                </button>
+
+                <button type="button"
+                        data-filter="sky"
+                        aria-pressed="false">
+                    Astronomy &amp; Space
+                </button>
+
+                <button type="button"
+                        data-filter="motion"
+                        aria-pressed="false">
+                    Motion &amp; Forces
+                </button>
+
+                <button type="button"
+                        data-filter="energy"
+                        aria-pressed="false">
+                    Power &amp; Energy
+                </button>
+
+                <button type="button"
+                        data-filter="bio"
+                        aria-pressed="false">
+                    Biology
+                </button>
+
+                <button type="button"
+                        data-filter="chem"
+                        aria-pressed="false">
+                    Chemistry
+                </button>
+            </div>
+
+            <p class="result-summary"
+               id="results"
+               role="status"
+               aria-live="polite">
+                14 activities · 5 topics
+            </p>
+        </div>
+
+        <div id="activities">
+
+            <!-- ASTRONOMY & SPACE -->
+            <section class="category"
+                     data-category="sky"
+                     aria-labelledby="heading-sky">
+
+                <div class="section-heading">
+                    <div>
+                        <h2 id="heading-sky">
+                            Astronomy &amp; Space
+                        </h2>
+
+                        <p>
+                            Observe patterns in the sky
+                            and explore the universe.
+                        </p>
+                    </div>
+
+                    <span class="section-count">
+                        5 activities
+                    </span>
+                </div>
+
+                <div class="sim-grid">
+                    <a class="sim-card"
+                       href="nebula-galaxy-sort/"
+                       data-search="astronomy space sorting nebulae galaxies images science 9">
+
+                        <span class="card-tag">
+                            Science 9
+                        </span>
+
+                        <h3>Sorting Nebulae and Galaxies</h3>
+
+                        <p>
+                            Sort images and compare the
+                            features of nebulae and galaxies.
+                        </p>
+
+                        <span class="open">
+                            Open activity
+                            <span aria-hidden="true">↗</span>
+                        </span>
+                    </a>
+
+                    <a class="sim-card"
+                       href="apparent-motion-sun/"
+                       data-search="astronomy space apparent motion sun earth rotates rotation orbits science 9">
+
+                        <span class="card-tag">
+                            Science 9
+                        </span>
+
+                        <h3>Apparent Motion of the Sun</h3>
+
+                        <p>
+                            Investigate how the Sun appears
+                            to move as Earth rotates and orbits.
+                        </p>
+
+                        <span class="open">
+                            Open activity
+                            <span aria-hidden="true">↗</span>
+                        </span>
+                    </a>
+
+                    <a class="sim-card"
+                       href="constellations/"
+                       data-search="astronomy space constellations year seasons visible sky science 9">
+
+                        <span class="card-tag">
+                            Science 9
+                        </span>
+
+                        <h3>Constellations Throughout the Year</h3>
+
+                        <p>
+                            Explore how the visible
+                            constellations change with
+                            time and season.
+                        </p>
+
+                        <span class="open">
+                            Open activity
+                            <span aria-hidden="true">↗</span>
+                        </span>
+                    </a>
+
+                    <a class="sim-card"
+                       href="doppler/"
+                       data-search="astronomy space doppler effect redshift sound light waves frequency wavelength expanding universe science 9">
+
+                        <span class="card-tag">
+                            Science 9
+                        </span>
+
+                        <h3>Doppler Effect &amp; Redshift</h3>
+
+                        <p>
+                            Explore sound, light, and the
+                            redshift associated with an
+                            expanding universe.
+                        </p>
+
+                        <span class="open">
+                            Open activity
+                            <span aria-hidden="true">↗</span>
+                        </span>
+                    </a>
+
+                    <a class="sim-card"
+                       href="bigbang/"
+                       data-search="astronomy space big bang expansion cyclic oscillating universe contraction bounce science 9">
+
+                        <span class="card-tag">
+                            Science 9
+                        </span>
+
+                        <h3>Expansion &amp; Cyclic Universe</h3>
+
+                        <p>
+                            Compare continued expansion with
+                            a hypothetical repeating cycle
+                            of expansion and contraction.
+                        </p>
+
+                        <span class="open">
+                            Open activity
+                            <span aria-hidden="true">↗</span>
+                        </span>
+                    </a>
+                </div>
+            </section>
+
+            <!-- MOTION & FORCES -->
+            <section class="category"
+                     data-category="motion"
+                     aria-labelledby="heading-motion">
+
+                <div class="section-heading">
+                    <div>
+                        <h2 id="heading-motion">
+                            Motion &amp; Forces
+                        </h2>
+
+                        <p>Investigate how objects move.</p>
+                    </div>
+
+                    <span class="section-count">
+                        1 activity
+                    </span>
+                </div>
+
+                <div class="sim-grid">
+                    <a class="sim-card"
+                       href="ramp/"
+                       data-search="motion forces kinematics ramp position velocity acceleration inclined physics">
+
+                        <span class="card-tag">
+                            Physics
+                        </span>
+
+                        <h3>Kinematics Ramp</h3>
+
+                        <p>
+                            Investigate position, velocity,
+                            and acceleration along an
+                            inclined ramp.
+                        </p>
+
+                        <span class="open">
+                            Open activity
+                            <span aria-hidden="true">↗</span>
+                        </span>
+                    </a>
+                </div>
+            </section>
+
+            <!-- POWER & ENERGY -->
+            <section class="category"
+                     data-category="energy"
+                     aria-labelledby="heading-energy">
+
+                <div class="section-heading">
+                    <div>
+                        <h2 id="heading-energy">
+                            Power &amp; Energy
+                        </h2>
+
+                        <p>
+                            Explore how engines turn
+                            heat into motion.
+                        </p>
+                    </div>
+
+                    <span class="section-count">
+                        6 activities
+                    </span>
+                </div>
+
+                <div class="sim-grid">
+                    <a class="sim-card"
+                       href="steam-engine/"
+                       data-search="power energy steam engine heat pressure throttle load external combustion">
+
+                        <span class="card-tag">
+                            External combustion
+                        </span>
+
+                        <h3>Steam Engine</h3>
+
+                        <p>
+                            Explore how heat, steam pressure,
+                            throttle position, and load
+                            affect a steam engine.
+                        </p>
+
+                        <span class="open">
+                            Open activity
+                            <span aria-hidden="true">↗</span>
+                        </span>
+                    </a>
+
+                    <a class="sim-card"
+                       href="stirling-engine/"
+                       data-search="power energy stirling engine temperature heat cool sealed gas piston flywheel external combustion">
+
+                        <span class="card-tag">
+                            External combustion
+                        </span>
+
+                        <h3>Stirling Engine</h3>
+
+                        <p>
+                            Use a temperature difference
+                            to heat and cool a sealed gas
+                            that drives a piston and flywheel.
+                        </p>
+
+                        <span class="open">
+                            Open activity
+                            <span aria-hidden="true">↗</span>
+                        </span>
+                    </a>
+
+                    <a class="sim-card"
+                       href="steam-turbine/"
+                       data-search="power energy steam turbine pressure momentum blades external combustion">
+
+                        <span class="card-tag">
+                            External combustion
+                        </span>
+
+                        <h3>Steam Turbine</h3>
+
+                        <p>
+                            Explore how high-pressure steam
+                            transfers momentum to
+                            turbine blades.
+                        </p>
+
+                        <span class="open">
+                            Open activity
+                            <span aria-hidden="true">↗</span>
+                        </span>
+                    </a>
+
+                    <a class="sim-card"
+                       href="2stroke/"
+                       data-search="power energy 2-stroke two stroke engine compression ignition exhaust fuel air transfer internal combustion">
+
+                        <span class="card-tag">
+                            Internal combustion
+                        </span>
+
+                        <h3>2-Stroke Engine</h3>
+
+                        <p>
+                            Follow compression, ignition,
+                            power, exhaust, and fuel-air
+                            transfer through a two-stroke cycle.
+                        </p>
+
+                        <span class="open">
+                            Open activity
+                            <span aria-hidden="true">↗</span>
+                        </span>
+                    </a>
+
+                    <a class="sim-card"
+                       href="4stroke/"
+                       data-search="power energy 4-stroke four stroke gasoline engine intake compression exhaust spark ignition internal combustion">
+
+                        <span class="card-tag">
+                            Internal combustion
+                        </span>
+
+                        <h3>4-Stroke Gasoline Engine</h3>
+
+                        <p>
+                            Explore the intake, compression,
+                            power, and exhaust strokes of
+                            a spark-ignition engine.
+                        </p>
+
+                        <span class="open">
+                            Open activity
+                            <span aria-hidden="true">↗</span>
+                        </span>
+                    </a>
+
+                    <a class="sim-card"
+                       href="diesel/"
+                       data-search="power energy diesel engine compression heat air injected fuel ignition internal combustion">
+
+                        <span class="card-tag">
+                            Internal combustion
+                        </span>
+
+                        <h3>Diesel Engine</h3>
+
+                        <p>
+                            Explore how compression heats
+                            incoming air so injected fuel
+                            ignites without a spark plug.
+                        </p>
+
+                        <span class="open">
+                            Open activity
+                            <span aria-hidden="true">↗</span>
+                        </span>
+                    </a>
+                </div>
+            </section>
+
+            <!-- BIOLOGY -->
+            <section class="category"
+                     data-category="bio"
+                     aria-labelledby="heading-bio">
+
+                <div class="section-heading">
+                    <div>
+                        <h2 id="heading-bio">Biology</h2>
+
+                        <p>
+                            Investigate the structures
+                            of living things.
+                        </p>
+                    </div>
+
+                    <span class="section-count">
+                        1 activity
+                    </span>
+                </div>
+
+                <div class="sim-grid">
+                    <a class="sim-card"
+                       href="flower-dissection/"
+                       data-search="biology flower dissection dissect sort parts petals stamens pistil ovules">
+
+                        <span class="card-tag">
+                            Biology
+                        </span>
+
+                        <h3>Flower Dissection</h3>
+
+                        <p>
+                            Dissect a flower and sort its parts.
+                        </p>
+
+                        <span class="open">
+                            Open activity
+                            <span aria-hidden="true">↗</span>
+                        </span>
+                    </a>
+                </div>
+            </section>
+
+            <!-- CHEMISTRY -->
+            <section class="category"
+                     data-category="chem"
+                     aria-labelledby="heading-chem">
+
+                <div class="section-heading">
+                    <div>
+                        <h2 id="heading-chem">Chemistry</h2>
+
+                        <p>
+                            Explore chemical equations
+                            and reaction types.
+                        </p>
+                    </div>
+
+                    <span class="section-count">
+                        1 activity
+                    </span>
+                </div>
+
+                <div class="sim-grid">
+                    <a class="sim-card"
+                       href="balancing/"
+                       data-search="chemistry balancing chemical equations reaction types interactive worksheet composition decomposition single double replacement combustion">
+
+                        <span class="card-tag">
+                            Chemistry
+                        </span>
+
+                        <h3>
+                            Balancing Equations &amp;
+                            Reaction Types
+                        </h3>
+
+                        <p>
+                            Practise balancing chemical
+                            equations and identifying
+                            reaction types with an
+                            interactive worksheet.
+                        </p>
+
+                        <span class="open">
+                            Open activity
+                            <span aria-hidden="true">↗</span>
+                        </span>
+                    </a>
+
+                    <!-- Add more chemistry cards here. -->
+                </div>
+            </section>
+
+        </div>
+
+        <div class="empty" id="empty" hidden>
+            <p>No activities match your search.</p>
+
+            <button type="button" id="reset">
+                Show all activities
+            </button>
+        </div>
+    </main>
+
+    <footer>
+        Interactive educational simulations ·
+        Made for classroom exploration
+    </footer>
+
+    <script>
+        "use strict";
+
+        const search = document.getElementById("search");
+
+        const sections = [
+            ...document.querySelectorAll(".category")
+        ];
+
+        const filters = [
+            ...document.querySelectorAll("[data-filter]")
+        ];
+
+        let topic = "all";
+
+        function filterActivities() {
+            const terms = search.value
+                .trim()
+                .toLowerCase()
+                .split(/\s+/)
+                .filter(Boolean);
+
+            let total = 0;
+            let visibleTopics = 0;
+
+            for (const section of sections) {
+                let count = 0;
+
+                const matchesTopic =
+                    topic === "all" ||
+                    section.dataset.category === topic;
+
+                const cards =
+                    section.querySelectorAll(".sim-card");
+
+                for (const card of cards) {
+                    const searchableText = (
+                        card.dataset.search + " " +
+                        card.textContent
+                    ).toLowerCase();
+
+                    const match =
+                        matchesTopic &&
+                        terms.every(term =>
+                            searchableText.includes(term)
+                        );
+
+                    card.hidden = !match;
+
+                    if (match) {
+                        count++;
+                    }
+                }
+
+                section.hidden = count === 0;
+
+                section.querySelector(".section-count")
+                    .textContent =
+                        count + " " +
+                        (count === 1
+                            ? "activity"
+                            : "activities");
+
+                total += count;
+
+                if (count > 0) {
+                    visibleTopics++;
+                }
+            }
+
+            document.getElementById("results")
+                .textContent =
+                    total + " " +
+                    (total === 1
+                        ? "activity"
+                        : "activities") +
+                    " · " +
+                    visibleTopics + " " +
+                    (visibleTopics === 1
+                        ? "topic"
+                        : "topics");
+
+            document.getElementById("empty")
+                .hidden = total !== 0;
+        }
+
+        function reset() {
+            search.value = "";
+            topic = "all";
+
+            filters.forEach(button => {
+                button.setAttribute(
+                    "aria-pressed",
+                    button.dataset.filter === "all"
+                );
+            });
+
+            filterActivities();
+            search.focus();
+        }
+
+        search.addEventListener(
+            "input",
+            filterActivities
+        );
+
+        filters.forEach(button => {
+            button.addEventListener("click", () => {
+                topic = button.dataset.filter;
+
+                filters.forEach(other => {
+                    other.setAttribute(
+                        "aria-pressed",
+                        other === button
+                    );
+                });
+
+                filterActivities();
+            });
+        });
+
+        document.getElementById("clear")
+            .addEventListener("click", () => {
+                search.value = "";
+                filterActivities();
+                search.focus();
+            });
+
+        document.getElementById("reset")
+            .addEventListener("click", reset);
+
+        filterActivities();
+    </script>
+</body>
+</html>
