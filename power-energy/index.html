@@ -1,0 +1,315 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Work and Energy | Ramp Investigation</title><style>
+:root{--bg:#10151b;--panel:#1b232c;--panel2:#222d38;--line:#394653;--text:#ecf1f5;--muted:#afbdc9;--maroon:#9f4055;--gold:#e9bd6b;--green:#8bd2ad}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,Segoe UI,sans-serif}header{background:#202832;border-bottom:3px solid var(--maroon);padding:17px max(22px,calc((100vw - 1400px)/2))}header h1{font-size:25px;margin:0}header p{margin:2px 0;color:var(--muted)}main{max-width:1400px;margin:auto;padding:20px;display:grid;grid-template-columns:minmax(290px,330px) minmax(480px,1fr);gap:16px}.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:17px}.controls{grid-row:span 2}.panel h2{font-size:17px;margin:0 0 12px}.field{margin:18px 0}.field label{display:flex;justify-content:space-between;gap:10px;font-weight:650}.field output{color:var(--gold);font-variant-numeric:tabular-nums}.field input[type=range]{width:100%;accent-color:var(--maroon);margin-top:10px}.hint{font-size:12px;color:var(--muted)}.switch{display:flex;align-items:center;gap:9px;margin:16px 0}.switch input{accent-color:var(--maroon)}.actions{display:flex;gap:8px;flex-wrap:wrap}button{border:1px solid #6a7b89;background:var(--panel2);color:var(--text);padding:9px 13px;border-radius:7px;cursor:pointer;font-weight:650}button:hover{background:#344453}button.primary{background:var(--maroon);border-color:var(--maroon)}button:disabled{opacity:.5;cursor:default}.tabs{display:flex;gap:8px;margin-bottom:14px}.tabs button[aria-pressed=true]{background:var(--maroon);border-color:var(--maroon)}.scene{background:linear-gradient(#202c38,#19232c);border:1px solid #42515f;border-radius:10px;overflow:hidden}svg{display:block;width:100%;height:auto;touch-action:none}#object{cursor:grab;touch-action:none}#object.dragging{cursor:grabbing}#object.finished{cursor:default}#object rect:first-child{pointer-events:all}.readings{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:12px}.reading{background:var(--panel2);padding:11px;border-radius:8px}.reading small{display:block;color:var(--muted);font-size:12px}.reading strong{display:block;font-size:21px;font-variant-numeric:tabular-nums}.note{color:var(--muted);font-size:13px;margin-top:12px}.lower{grid-column:2}.mathgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.calc{background:var(--panel2);padding:13px;border-radius:9px}.calc strong{display:block}.calc code{color:var(--gold);font-size:13px;white-space:normal}.calc .result{color:var(--green);margin-top:8px}.hide{display:none!important}.questions{grid-column:1/-1}.questions ol{padding-left:22px}.questions li{margin:9px 0}.answerline{display:inline-block;border-bottom:1px solid #677581;min-width:120px}.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:12px;color:var(--muted)}.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px}.status{color:var(--gold);font-weight:600;margin-top:9px;min-height:22px}@media(max-width:900px){main{display:block}.panel{margin-bottom:14px}.readings{grid-template-columns:repeat(2,1fr)}.mathgrid{grid-template-columns:1fr}}@media(max-width:520px){.readings{grid-template-columns:repeat(2,1fr)}header h1{font-size:21px}}
+.tabbar{display:flex;gap:8px;padding:14px max(22px,calc((100vw - 1400px)/2)) 0}.tabbar button[aria-selected=true]{background:var(--maroon);border-color:var(--maroon)}.winch-layout{max-width:1400px;margin:auto;padding:20px;display:grid;grid-template-columns:minmax(290px,330px) minmax(480px,1fr);gap:16px}.winch-layout .wide{grid-column:2}.winch-readings{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:12px}#winchScene{width:100%;height:auto}#winchLoad{transition:none}@media(max-width:900px){.winch-layout{display:block}.winch-layout .panel{margin-bottom:14px}}@media(max-width:520px){.winch-readings{grid-template-columns:repeat(2,1fr)}}
+</style></head><body><header><h1>Power and Energy</h1><p>Work and Energy · Technology 9</p></header><nav class="tabbar" aria-label="Investigations"><button id="rampTab" aria-selected="true">1 · Force &amp; Work</button><button id="winchTab" aria-selected="false">2 · Winch &amp; Power</button><button id="jumpTab" aria-selected="false">3 · Jump &amp; Energy</button></nav><main id="rampMain">
+<section class="panel controls"><h2>Experiment settings</h2><div class="field"><label for="mass">Object mass <output id="massVal"></output></label><input id="mass" type="range" min="1" max="30" step="1" value="10"></div><div class="field"><label for="height">Vertical height <output id="heightVal"></output></label><input id="height" type="range" min="0.5" max="3" step="0.25" value="1.5"></div><div class="field"><label for="angle">Ramp angle <output id="angleVal"></output></label><input id="angle" type="range" min="10" max="90" step="5" value="30"></div><div class="hint">Drag the object upward. Move the object up the ramp or lift it vertically at 90°. Each completed lift is recorded automatically. Force readings assume slow, steady movement.</div><hr style="border:0;border-top:1px solid var(--line);margin:20px 0"><div class="actions"><button id="reset">↺ Reset</button></div><div id="status" class="status" aria-live="polite">Ready to begin.</div><p class="note">Assumptions: g = 9.81 N/kg; no friction; slow, steady movement. At 90°, the ramp disappears and the object is lifted vertically.</p></section>
+<section class="panel"><p class="hint">Drag the object up the ramp. Set the angle to 90° for a vertical lift. You cannot move it backward. Reaching the top finishes the trial.</p><div class="scene"><svg id="scene" viewBox="0 0 760 350" role="img" aria-label="Animated object being raised to a platform up a ramp or vertically at 90 degrees"><defs><pattern id="grid" width="38" height="38" patternUnits="userSpaceOnUse"><path d="M 38 0 L 0 0 0 38" fill="none" stroke="#34414c" stroke-width=".6"/></pattern></defs><rect width="760" height="350" fill="url(#grid)"/><line x1="25" y1="295" x2="735" y2="295" stroke="#8b9ca9" stroke-width="3"/><g id="geometry"></g><g id="object"><rect x="-21" y="-35" width="42" height="35" rx="4" fill="#d6a35f" stroke="#ffe0a0" stroke-width="2"/><path d="M-15 -24 L15 -24 M0 -35 L0 0" stroke="#956d3e" opacity=".6"/><line id="rope" x1="0" y1="-35" x2="0" y2="-65" stroke="#e9bd6b" stroke-width="3"/><rect id="meter" x="-11" y="-86" width="22" height="22" rx="6" fill="#ecf1f5" stroke="#a9b6c1"/><text id="meterText" x="0" y="-71" font-size="8" font-weight="bold" text-anchor="middle" fill="#18212a">N</text></g><g id="heightGuide"></g><text x="28" y="32" fill="#b7c6d0" font-size="15" id="sceneTitle">Vertical lift</text></svg></div><div class="readings"><div class="reading"><small>Force meter</small><strong id="forceOut">—</strong></div><div class="reading"><small>Distance travelled</small><strong id="distanceOut">—</strong></div><div class="reading"><small>Height gained</small><strong id="gainOut">—</strong></div></div><p class="note">Force readings are idealized for slow, steady motion; actual force can vary during acceleration.</p></section>
+<section class="panel lower"><h2>Calculate and compare</h2><p class="note">Results are automatically recorded when the object reaches the top, and sorted by mass, height, then ramp angle.</p><p class="note">Try the calculations yourself before revealing the answers.</p><div class="mathgrid"><div class="calc"><strong>Work done by applied force</strong><code>Work = force × distance</code><div class="result hide" id="workAnswer"></div></div><div class="calc"><strong>Gravitational potential energy gained</strong><code>GPE = mass × 9.81 × height</code><div class="result hide" id="energyAnswer"></div></div></div><div class="actions" style="margin-top:13px"><button id="reveal">Show calculations</button><button id="clear">Clear comparison</button></div><div style="overflow-x:auto"><table id="comparison" style="width:100%;border-collapse:collapse;margin-top:12px;font-size:13px"><thead><tr><th>Mass (kg)</th><th>Height (m)</th><th>Method</th><th>Force (N)</th><th>Distance (m)</th><th>Work (J)</th></tr></thead><tbody></tbody></table></div></section>
+<section class="panel questions"><h2>Suggested investigation questions</h2><ol><li>Set the mass to 10 kg and the height to 1.5 m. Compare a 90° vertical lift with a 30° ramp. Which method requires less force?</li><li>Which method requires moving the object a greater distance?</li><li>Calculate the work done in each case. What do you notice?</li><li>Change the ramp angle to 15°, then 45°, then 90°. How do the force and distance change? What happens to the total work?</li><li>At the same height, what happens to gravitational potential energy when the object's mass is doubled?</li><li>During the motion, the object has kinetic energy. Does its kinetic energy increase when it travels at constant speed? Explain.</li></ol></section></main>
+<main id="winchMain" class="winch-layout hide">
+<section class="panel"><h2>Winch settings</h2><p class="hint">An ideal winch pulls a load up a ramp. Change the angle to compare force and distance; at 90°, the ramp disappears for a vertical lift.</p>
+<div class="field"><label for="winchMass">Load mass <output id="winchMassVal">10 kg</output></label><input type="range" id="winchMass" min="1" max="30" step="1" value="10"></div>
+<div class="field"><label for="winchHeight">Lift height <output id="winchHeightVal">1.5 m</output></label><input type="range" id="winchHeight" min="0.5" max="3" step="0.25" value="1.5"></div>
+<div class="field"><label for="winchAngle">Ramp angle <output id="winchAngleVal">30°</output></label><input type="range" id="winchAngle" min="10" max="90" step="5" value="30"></div>
+<div class="field"><label for="winchPower">Winch power <output id="winchPowerVal">100 W</output></label><input type="range" id="winchPower" min="25" max="500" step="25" value="100"></div>
+<div class="actions"><button class="primary" id="winchStart">Start winch</button><button id="winchReset">Reset</button></div><div class="status" id="winchStatus" aria-live="polite">Ready to lift.</div><p class="note">Ideal model: all winch power goes into raising the load, with no losses. Power delivered to the load equals the selected winch power. No friction or efficiency losses. Gravity = 9.81 N/kg.</p></section>
+<section class="panel"><h2>Winch lift</h2><div class="scene"><svg id="winchScene" viewBox="0 0 760 350" aria-label="Winch pulling an object up a ramp or lifting vertically"><defs><pattern id="wg" width="38" height="38" patternUnits="userSpaceOnUse"><path d="M38 0 L0 0 0 38" fill="none" stroke="#34414c" stroke-width=".6"/></pattern></defs><rect width="760" height="350" fill="url(#wg)"/><line x1="25" y1="295" x2="735" y2="295" stroke="#8b9ca9" stroke-width="3"/><g id="winchGeometry"></g><g id="winchLoad"><rect x="-21" y="-35" width="42" height="35" rx="4" fill="#d6a35f" stroke="#ffe0a0" stroke-width="2"/><text id="winchMassLabel" x="0" y="-12" text-anchor="middle" font-size="12" font-weight="bold" fill="#342719">10 kg</text></g><path id="winchRope" d="" fill="none" stroke="#e9bd6b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><g id="winchPulley"><circle r="11" fill="#26313c" stroke="#d6dde3" stroke-width="3"/><circle r="3" fill="#d6dde3"/></g><g id="winchMachine"><rect x="-37" y="-20" width="74" height="40" rx="8" fill="#9f4055" stroke="#d5a0ac" stroke-width="2"/><text x="0" y="5" text-anchor="middle" fill="white" font-size="15">WINCH</text></g><text id="winchSceneLabel" x="28" y="32" fill="#b7c6d0" font-size="15"></text></svg></div>
+<div class="winch-readings"><div class="reading"><small>Winch power / lift power</small><strong id="winchPowerOut">100 W</strong></div><div class="reading"><small>Elapsed time</small><strong id="winchTimeOut">0.00 s</strong></div><div class="reading"><small>Height gained</small><strong id="winchGainOut">0.00 m</strong></div><div class="reading"><small>Work done</small><strong id="winchWorkOut">0.0 J</strong></div><div class="reading"><small>Pulling force</small><strong id="winchForceOut">49.1 N</strong></div><div class="reading"><small>Distance travelled</small><strong id="winchDistanceOut">0.00 m</strong></div><div class="reading"><small>Energy gained</small><strong id="winchEnergyOut">0.0 J</strong></div></div></section>
+<section class="panel wide"><h2>Completed winch trials</h2><p class="note">Results are recorded automatically at the top and sorted by mass, height, angle, then power. Repeat a setting to replace its previous result.</p><div class="actions"><button id="winchClear">Clear results</button></div><div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;margin-top:12px;font-size:13px" id="winchTable"><thead><tr><th>Mass (kg)</th><th>Height (m)</th><th>Angle</th><th>Force (N)</th><th>Distance (m)</th><th>Power (W)</th><th>Work (J)</th><th>Time (s)</th></tr></thead><tbody></tbody></table></div><p class="note">Work = mass × 9.81 × height. &nbsp; Time = work ÷ power. Compare trials with the same mass, height and power at different angles: force and distance change, but work and time remain constant.</p></section>
+</main>
+<section id="jumpMain" class="winch-layout hide">
+<section class="panel"><h2>Gravity-powered jump</h2><p class="hint">Choose where to release the ball on the fixed hill. Release it from rest. It rolls down to the launch ramp, then flies across the gap. Can you land on the other side?</p>
+<div class="field"><label>Release height on hill <output id="jumpHillVal">4.0 m</output></label><input id="jumpHill" type="range" min="1.25" max="8" step=".25" value="4"></div>
+<div class="field"><label>Gap width <output id="jumpGapVal">6.0 m</output></label><input id="jumpGap" type="range" min="3" max="12" step=".5" value="6"></div>
+<div class="field"><label>Ball mass <output id="jumpMassVal">5 kg</output></label><input id="jumpMass" type="range" min="1" max="20" step="1" value="5"></div>
+<div class="actions"><button class="primary" id="jumpStart">Release ball</button><button id="jumpReset">Reset</button></div>
+<p class="status" id="jumpStatus" aria-live="polite">Ready to release.</p>
+
+
+</section>
+<section class="panel"><h2>Hill, ramp and jump</h2><div class="scene"><svg id="jumpScene" viewBox="0 0 760 380" role="img" aria-label="Ball descends hill, launches off a ramp and attempts to land across a gap">
+<defs><pattern id="jumpGrid" width="38" height="38" patternUnits="userSpaceOnUse"><path d="M38 0 L0 0 0 38" fill="none" stroke="#34414c" stroke-width=".6"/></pattern></defs>
+<rect width="760" height="380" fill="url(#jumpGrid)"/><path id="jumpHillPath" stroke="#d3a867" stroke-width="8" fill="none" stroke-linecap="round"/><path id="jumpLanding" stroke="#b5c4ce" stroke-width="9" fill="none" stroke-linecap="round"/><g id="jumpSpeedSign"><rect id="jumpSignBg" width="86" height="58" rx="9" fill="#f5f5f1" stroke="#bd3636" stroke-width="5"/><text id="jumpSignTitle" fill="#30343a" font-size="12" font-weight="bold" text-anchor="middle">MIN SPEED</text><text id="jumpSignValue" fill="#30343a" font-size="16" font-weight="bold" text-anchor="middle">—</text></g><path id="jumpTrajectory" fill="none" stroke="#8bd2ad" stroke-width="2" stroke-dasharray="5 6"/><line id="jumpGround" stroke="#8194a3" stroke-width="2"/><circle id="jumpBall" r="10" fill="#e9bd6b" stroke="#fff0c8" stroke-width="2"/>
+<text x="16" y="25" fill="#b7c6d0" font-size="14">Release from rest → downhill → launch → landing</text><text id="jumpGapText" fill="#b7c6d0" font-size="13">Gap</text></svg></div>
+<div class="readings"><div class="reading"><small>Height</small><strong id="jumpYOut">—</strong></div><div class="reading"><small>Speed</small><strong id="jumpVOut">—</strong></div><div class="reading"><small>Stage</small><strong id="jumpStageOut" style="font-size:16px">Hill</strong></div></div>
+<div style="margin-top:16px"><label>Gravitational potential energy <strong id="jumpPEOut" style="float:right">—</strong></label><div style="background:#34414c;border-radius:5px;height:19px;overflow:hidden"><div id="jumpPEBar" style="height:100%;width:0;background:#8bd2ad"></div></div></div>
+<div style="margin-top:12px"><label>Kinetic energy <strong id="jumpKEOut" style="float:right">—</strong></label><div style="background:#34414c;border-radius:5px;height:19px;overflow:hidden"><div id="jumpKEBar" style="height:100%;width:0;background:#e9bd6b"></div></div></div>
+<div style="margin-top:12px"><label>Total mechanical energy <strong id="jumpTotalOut" style="float:right">—</strong></label><div style="background:#34414c;border-radius:5px;height:19px;overflow:hidden"><div id="jumpTotalBar" style="height:100%;width:100%;background:#a8a5ef"></div></div></div></section>
+<section class="panel wide"><h2>Energy at key points</h2><div style="overflow-x:auto"><table id="jumpTable" style="width:100%;border-collapse:collapse;font-size:14px"><thead><tr><th>Point</th><th>Height (m)</th><th>Speed (m/s)</th><th>GPE (J)</th><th>KE (J)</th><th>Total (J)</th></tr></thead><tbody></tbody></table></div>
+</section></section>
+<script>
+'use strict';
+const $=id=>document.getElementById(id),g=9.81;
+let progress=0,dragging=false,finished=false,dragStartProgress=0,dragStartPointerProgress=0,rows=[];
+const inputs=['mass','height','angle'];
+function vals(){
+ const m=+$('mass').value,h=+$('height').value,a=+$('angle').value*Math.PI/180;
+ const vertical=+$('angle').value===90;
+ const ramp=!vertical;
+ const distance=ramp?h/Math.sin(a):h;
+ const force=ramp?m*g*Math.sin(a):m*g;
+ const travelled=distance*progress,gained=h*progress;
+ const work=force*travelled,energy=m*g*gained;
+ return {m,h,a,ramp,distance,force,travelled,gained,work,energy,angle:+$("angle").value};
+}
+const fmt=(n,d=2)=>n.toFixed(d);
+function draw(){
+ const s=vals(),base=295,top=105,vertical=base-top,run=s.ramp?Math.min(470,vertical/Math.tan(s.a)):0;
+ const x0=s.ramp?105:310,x1=x0+run,y=base-progress*vertical,x=x0+progress*run;
+ let geometry=s.ramp?`<path d="M ${x0} ${base} L ${x1} ${top} L ${x1} ${base} Z" fill="#596977" fill-opacity=".4" stroke="#a4b2bd" stroke-width="3"/><path d="M ${x0} ${base} L ${x1} ${top}" stroke="#e9bd6b" stroke-width="6"/>`:`<path d="M ${x0+45} ${top} L ${x0+145} ${top} L ${x0+145} ${base}" fill="none" stroke="#a4b2bd" stroke-width="5"/>`;
+ geometry+=`<line x1="${s.ramp?x1+60:x0+170}" y1="${top}" x2="${s.ramp?x1+60:x0+170}" y2="${base}" stroke="#8bd2ad" stroke-width="2" stroke-dasharray="5 5"/><text x="${s.ramp?x1+70:x0+180}" y="${(top+base)/2}" fill="#8bd2ad" font-size="15">${fmt(s.h)} m</text>`;
+ if(s.ramp)geometry+=`<text x="${x0+30}" y="${base-15}" fill="#e9bd6b" font-size="14">${$('angle').value}°</text>`;
+ $('geometry').innerHTML=geometry;
+ $('object').setAttribute('transform',`translate(${x} ${y})`);
+ $('sceneTitle').textContent=s.ramp?'Push up a ramp ('+$('angle').value+'°)':'Vertical lift (90°)';
+ $('forceOut').textContent=fmt(s.force,1)+' N';
+ $('distanceOut').textContent=fmt(s.travelled)+' m';
+ $('gainOut').textContent=fmt(s.gained)+' m';
+ $('meterText').textContent=fmt(s.force,0);
+ $('workAnswer').textContent=`${fmt(s.force)} × ${fmt(s.travelled)} = ${fmt(s.work)} J`;
+ $('energyAnswer').textContent=`${fmt(s.m)} × 9.81 × ${fmt(s.gained)} = ${fmt(s.energy)} J`;
+}
+function reset(){dragging=false;finished=false;progress=0;$('object').classList.remove('dragging');$('status').textContent='Ready. Drag the object upward to begin.';draw()}
+function pointerProgress(event){
+ const svg=$('scene'),pt=svg.createSVGPoint();pt.x=event.clientX;pt.y=event.clientY;
+ const pos=pt.matrixTransform(svg.getScreenCTM().inverse());
+ const s=vals(),base=295,vertical=190;
+ if(!s.ramp)return(base-pos.y)/vertical;
+ const run=Math.min(470,vertical/Math.tan(s.a)),dx=pos.x-105,dy=base-pos.y;
+ return(dx*run+dy*vertical)/(run*run+vertical*vertical);
+}
+$('object').addEventListener('pointerdown',e=>{
+ if((e.button!==0&&e.pointerType==='mouse')||finished)return;
+ dragging=true;dragStartProgress=progress;dragStartPointerProgress=pointerProgress(e);
+ $('object').classList.add('dragging');$('object').setPointerCapture(e.pointerId);
+ $('status').textContent='Moving upward — release to pause.';e.preventDefault();
+});
+$('object').addEventListener('pointermove',e=>{
+ if(!dragging)return;
+ const next=dragStartProgress+pointerProgress(e)-dragStartPointerProgress;
+ progress=Math.min(1,Math.max(progress,next));
+ if(progress>=1){
+   progress=1;finished=true;dragging=false;
+   $('object').classList.remove('dragging');
+   $('status').textContent='Trial complete — result recorded automatically. Press Reset for another trial.';
+   recordResult();
+   if($('object').hasPointerCapture(e.pointerId))$('object').releasePointerCapture(e.pointerId);
+ }
+ draw();e.preventDefault();
+});
+function endDrag(){if(!dragging||finished)return;dragging=false;$('object').classList.remove('dragging');$('status').textContent='Paused. Drag again to continue.';draw()}
+$('object').addEventListener('pointerup',endDrag);
+$('object').addEventListener('pointercancel',endDrag);
+$('object').addEventListener('lostpointercapture',endDrag);
+function updateControls(){for(const id of ['mass','height','angle'])$(id+'Val').textContent=$(id).value+({mass:' kg',height:' m',angle:'°'}[id]);reset()}
+inputs.forEach(id=>$(id).addEventListener('input',updateControls));
+$('reset').onclick=reset;
+$('reveal').onclick=()=>{const hidden=$('workAnswer').classList.contains('hide');for(const id of ['workAnswer','energyAnswer'])$(id).classList.toggle('hide',!hidden);$('reveal').textContent=hidden?'Hide calculations':'Show calculations'};
+function recordResult(){
+ const r=vals();
+ // One entry per set of experimental settings; repeating a trial updates it.
+ rows=rows.filter(old=>!(old.m===r.m&&old.h===r.h&&old.angle===r.angle));
+ rows.push(r);
+ rows.sort((a,b)=>a.m-b.m||a.h-b.h||a.angle-b.angle);
+ renderRows();
+}
+$('clear').onclick=()=>{rows=[];renderRows()};
+function renderRows(){
+ $('comparison').querySelector('tbody').innerHTML=rows.map(r=>`<tr>${[
+ fmt(r.m,0),fmt(r.h,2),r.angle===90?'Vertical (90°)':`Ramp ${r.angle}°`,
+ fmt(r.force,1),fmt(r.distance),fmt(r.work,1)
+ ].map(c=>`<td style="padding:7px 5px;border-top:1px solid #394653">${c}</td>`).join('')}</tr>`).join('');
+}
+updateControls();
+// Tab navigation
+function showTab(which){const ramp=which==='ramp';$('rampMain').classList.toggle('hide',!ramp);$('winchMain').classList.toggle('hide',ramp);$('rampTab').setAttribute('aria-selected',String(ramp));$('winchTab').setAttribute('aria-selected',String(!ramp));if(!ramp)winchDraw();}
+$('rampTab').onclick=()=>showTab('ramp');$('winchTab').onclick=()=>showTab('winch');
+// Ideal constant mechanical power: P = W/t, W = mgh.
+let winchProgress=0,winchRunning=false,winchFinished=false,winchElapsed=0,winchLastFrame=null,winchFrame=null,winchRows=[];
+const winchInputs=['winchMass','winchHeight','winchAngle','winchPower'];
+function winchValues(){
+ const m=+$('winchMass').value,h=+$('winchHeight').value,p=+$('winchPower').value,angle=+$('winchAngle').value;
+ const radians=angle*Math.PI/180,force=m*g*Math.sin(radians),distance=h/Math.sin(radians);
+ return {m,h,p,angle,force,distance,work:m*g*h,duration:m*g*h/p};
+}
+function winchDraw(){
+ const v=winchValues(),vertical=v.angle===90,base=295,top=105,rise=190;
+ const run=vertical?0:Math.min(470,rise/Math.tan(v.angle*Math.PI/180));
+ const x0=vertical?310:105,x1=x0+run;
+ const x=x0+winchProgress*run,y=base-winchProgress*rise;
+ let geo=vertical?`<path d="M ${x0+45} ${top} L ${x0+145} ${top} L ${x0+145} ${base}" fill="none" stroke="#a4b2bd" stroke-width="5"/>`:`<path d="M ${x0} ${base} L ${x1} ${top} L ${x1} ${base} Z" fill="#596977" fill-opacity=".4" stroke="#a4b2bd" stroke-width="3"/><path d="M ${x0} ${base} L ${x1} ${top}" stroke="#e9bd6b" stroke-width="6"/>`;
+ geo+=`<line x1="${vertical?x0+170:x1+60}" y1="${top}" x2="${vertical?x0+170:x1+60}" y2="${base}" stroke="#8bd2ad" stroke-width="2" stroke-dasharray="5 5"/><text x="${vertical?x0+180:x1+70}" y="200" fill="#8bd2ad" font-size="15">${v.h.toFixed(2)} m</text>`;
+ $('winchGeometry').innerHTML=geo;
+ $('winchLoad').setAttribute('transform',`translate(${x} ${y})`);
+ // Keep the load cable aligned with the ramp and the
+ // winch drum horizontally aligned with the pulley.
+ const angleRad=v.angle*Math.PI/180;
+ const attachX=vertical?x:x+21*Math.cos(angleRad);
+ const attachY=vertical?y-35:y-18-21*Math.sin(angleRad);
+ const endAttachX=vertical?x1:x1+21*Math.cos(angleRad);
+ const endAttachY=vertical?top-35:top-18-21*Math.sin(angleRad);
+ const pulleyX=endAttachX+(vertical?0:48*Math.cos(angleRad));
+ const pulleyY=endAttachY-48*Math.sin(angleRad);
+ const machineX=Math.min(710,pulleyX+76);
+ const machineY=pulleyY;
+ $('winchMachine').setAttribute('transform',`translate(${machineX} ${machineY})`);
+ $('winchPulley').setAttribute('transform',`translate(${pulleyX} ${pulleyY})`);
+ const drumX=machineX-25,drumY=machineY;
+ $('winchRope').setAttribute('d',
+   `M ${attachX} ${attachY} L ${pulleyX} ${pulleyY} L ${drumX} ${drumY}`);
+ $('winchSceneLabel').textContent=vertical?'Vertical lift (90°)':`Ramp ${v.angle}°`;
+ $('winchMassLabel').textContent=v.m+' kg';
+ $('winchPowerOut').textContent=v.p+' W';
+ $('winchTimeOut').textContent=winchElapsed.toFixed(2)+' s';
+ $('winchGainOut').textContent=(v.h*winchProgress).toFixed(2)+' m';
+ $('winchDistanceOut').textContent=(v.distance*winchProgress).toFixed(2)+' m';
+ $('winchWorkOut').textContent=(v.work*winchProgress).toFixed(1)+' J';
+ $('winchEnergyOut').textContent=(v.work*winchProgress).toFixed(1)+' J';
+ $('winchForceOut').textContent=v.force.toFixed(1)+' N';
+}
+function winchStop(){winchRunning=false;winchLastFrame=null;if(winchFrame!==null)cancelAnimationFrame(winchFrame);winchFrame=null;}
+function winchReset(){winchStop();winchProgress=0;winchElapsed=0;winchFinished=false;$('winchStart').disabled=false;$('winchStart').textContent='Start winch';$('winchStatus').textContent='Ready to lift.';winchDraw();}
+function winchTick(now){
+ if(!winchRunning)return;
+ if(winchLastFrame===null)winchLastFrame=now;
+ const dt=Math.max(0,(now-winchLastFrame)/1000);winchLastFrame=now;
+ const v=winchValues();
+ winchElapsed=Math.min(v.duration,winchElapsed+dt);
+ winchProgress=Math.min(1,winchElapsed/v.duration);
+ winchDraw();
+ if(winchProgress>=1){winchFinished=true;winchStop();$('winchStart').disabled=true;$('winchStatus').textContent='Lift complete — result recorded.';winchRecord();return;}
+ winchFrame=requestAnimationFrame(winchTick);
+}
+$('winchStart').onclick=()=>{if(winchFinished)return;if(winchRunning){winchStop();$('winchStart').textContent='Resume winch';$('winchStatus').textContent='Paused.';}else{winchRunning=true;winchLastFrame=null;$('winchStart').textContent='Pause winch';$('winchStatus').textContent='Winch lifting…';winchFrame=requestAnimationFrame(winchTick);}};
+$('winchReset').onclick=winchReset;
+winchInputs.forEach(id=>$(id).addEventListener('input',()=>{
+ for(const [name,unit] of [['Mass',' kg'],['Height',' m'],['Angle','°'],['Power',' W']])$('winch'+name+'Val').textContent=$('winch'+name).value+unit;
+ winchReset();
+}));
+function winchRecord(){
+ const v=winchValues();
+ winchRows=winchRows.filter(r=>!(r.m===v.m&&r.h===v.h&&r.angle===v.angle&&r.p===v.p));
+ winchRows.push(v);winchRows.sort((a,b)=>a.m-b.m||a.h-b.h||a.angle-b.angle||a.p-b.p);winchRenderRows();
+}
+function winchRenderRows(){
+ $('winchTable').querySelector('tbody').innerHTML=winchRows.map(v=>'<tr>'+[v.m,v.h.toFixed(2),v.angle+'°',v.force.toFixed(1),v.distance.toFixed(2),v.p,v.work.toFixed(1),v.duration.toFixed(2)].map(c=>`<td style="padding:7px 5px;border-top:1px solid #394653">${c}</td>`).join('')+'</tr>').join('');
+}
+$('winchClear').onclick=()=>{winchRows=[];winchRenderRows();};
+winchDraw();
+
+// Third investigation: gravity-powered hill and jump.
+const JUMP_LAUNCH_H=1,JUMP_ANGLE=Math.PI/4,JUMP_PLATFORM=4;
+const HILL_TOP=8,HILL_START=-6,HILL_BOTTOM=-1.25;
+function hillY(x){if(x<=HILL_BOTTOM){const u=Math.max(0,Math.min(1,(x-HILL_START)/(HILL_BOTTOM-HILL_START)));return .35+7.65*Math.pow(1-u,2);}const u=(x-HILL_BOTTOM)/(-HILL_BOTTOM);return .35+.65*(u*u*(3-2*u)) + 1.25*(u*u*u-u*u);}
+function hillStartX(h){return HILL_START+(HILL_BOTTOM-HILL_START)*(1-Math.sqrt(Math.max(0,(h-.35)/7.65)));}
+let jumpPhase='ready',jumpClock=0,jumpLast=null,jumpFrame=null,jumpHillX=0;
+function jumpParams(){
+ const m=+$('jumpMass').value,h=+$('jumpHill').value,gap=+$('jumpGap').value;
+ const v=Math.sqrt(2*g*(h-JUMP_LAUNCH_H));
+ const vx=v*Math.cos(JUMP_ANGLE),vy=v*Math.sin(JUMP_ANGLE);
+ const flight=(vy+Math.sqrt(vy*vy+2*g*JUMP_LAUNCH_H))/g;
+ // Crossing of the landing platform height on the descending branch.
+ const landT=2*vy/g,landX=vx*landT;
+ const safe=Math.sqrt(g*gap/Math.sin(2*JUMP_ANGLE));
+ const success=landX>=gap && landX<=gap+JUMP_PLATFORM;
+ const endT=success?landT:flight;
+ return {m,h,gap,v,vx,vy,flight,landT,landX,safe,success,endT,total:m*g*h};
+}
+function jumpFlight(t,p){
+ const x=p.vx*t,y=Math.max(0,JUMP_LAUNCH_H+p.vy*t-.5*g*t*t);
+ return {x,y,speed:Math.hypot(p.vx,p.vy-g*t)};
+}
+function jumpDisplayState(p){
+ if(jumpPhase==='ready'||jumpPhase==='pausedHill'&&jumpClock===0)return {x:hillStartX(p.h),y:p.h,speed:0,stage:'Hill'};
+ if(jumpPhase==='hill'||jumpPhase==='pausedHill'){
+  const x=jumpHillX,y=hillY(x);
+  return {x,y,speed:Math.sqrt(Math.max(0,2*g*(p.h-y))),stage:'Downhill'};
+ }
+ const t=Math.min(jumpClock,p.endT),v=jumpFlight(t,p);
+ return {...v,stage:jumpPhase==='done'?'Finished':'In flight'};
+}
+function jumpRender(){
+ const p=jumpParams(),q=jumpDisplayState(p);
+ const maxH=8.6,maxX=Math.max(16,p.gap+JUMP_PLATFORM+1);
+ const scale=Math.min(695/(maxX+6),285/maxH),ox=65+6*scale,oy=335;
+ const sx=x=>ox+x*scale,sy=y=>oy-y*scale;
+ // Hill slopes into the upward-pointing launch lip at (0, 1m).
+ const hill=Array.from({length:121},(_,i)=>{const x=HILL_START+(0-HILL_START)*i/120;return `${i?'L':'M'} ${sx(x).toFixed(1)} ${sy(hillY(x)).toFixed(1)}`;}).join(' ');
+ $('jumpHillPath').setAttribute('d',hill);
+ $('jumpLanding').setAttribute('d',`M ${sx(p.gap)} ${sy(1)} L ${sx(p.gap+JUMP_PLATFORM)} ${sy(1)}`);
+ $('jumpGround').setAttribute('x1',sx(-6.2));$('jumpGround').setAttribute('y1',sy(0));$('jumpGround').setAttribute('x2',sx(maxX));$('jumpGround').setAttribute('y2',sy(0));
+ $('jumpGapText').setAttribute('x',sx(p.gap/2));$('jumpGapText').setAttribute('y',sy(.4));$('jumpGapText').textContent=p.gap.toFixed(1)+' m gap';
+ const pts=[];
+ const traceEnd=(jumpPhase==='flight'||jumpPhase==='done'||jumpPhase==='pausedFlight')?Math.min(jumpClock,p.endT):0;
+ if(traceEnd>0)for(let i=0;i<=80;i++){const v=jumpFlight(traceEnd*i/80,p);pts.push(`${i?'L':'M'}${sx(v.x).toFixed(1)} ${sy(v.y).toFixed(1)}`);}
+ const signX=sx(0)+12,signY=sy(1)-96;
+ $('jumpSpeedSign').setAttribute('transform',`translate(${signX} ${signY})`);
+ $('jumpSignTitle').setAttribute('x',43);$('jumpSignTitle').setAttribute('y',20);
+ $('jumpSignValue').setAttribute('x',43);$('jumpSignValue').setAttribute('y',42);
+ $('jumpSignValue').textContent=p.safe.toFixed(1)+' m/s';
+ $('jumpTrajectory').setAttribute('d',pts.join(' '));
+ $('jumpBall').setAttribute('cx',sx(q.x));$('jumpBall').setAttribute('cy',sy(q.y));
+ const pe=p.m*g*q.y,ke=.5*p.m*q.speed*q.speed;
+ $('jumpYOut').textContent=q.y.toFixed(2)+' m';$('jumpVOut').textContent=q.speed.toFixed(2)+' m/s';$('jumpStageOut').textContent=q.stage;
+ $('jumpPEOut').textContent=pe.toFixed(1)+' J';$('jumpKEOut').textContent=ke.toFixed(1)+' J';$('jumpTotalOut').textContent=p.total.toFixed(1)+' J';
+ $('jumpPEBar').style.width=(100*pe/p.total).toFixed(2)+'%';$('jumpKEBar').style.width=(100*ke/p.total).toFixed(2)+'%';$('jumpTotalBar').style.width='100%';
+ 
+ const apexT=p.vy/g;
+ const points=[['Release point',{y:p.h,speed:0}],['Launch',{y:1,speed:p.v}],['Highest flight point',jumpFlight(apexT,p)],[p.success?'Landing platform':'Ground impact',jumpFlight(p.endT,p)]];
+ $('jumpTable').querySelector('tbody').innerHTML=points.map(([label,v])=>{
+  const pe=p.m*g*v.y,ke=.5*p.m*v.speed*v.speed;
+  return '<tr>'+[label,v.y.toFixed(2),v.speed.toFixed(2),pe.toFixed(1),ke.toFixed(1),(pe+ke).toFixed(1)].map(c=>`<td style="padding:9px 7px;border-top:1px solid #394653">${c}</td>`).join('')+'</tr>';
+ }).join('');
+}
+function jumpStop(){if(jumpFrame!==null)cancelAnimationFrame(jumpFrame);jumpFrame=null;jumpLast=null;}
+function jumpReset(){jumpStop();jumpPhase='ready';jumpClock=0;jumpHillX=hillStartX(jumpParams().h);$('jumpStart').textContent='Release ball';$('jumpStatus').textContent='Ready to release.';jumpRender();}
+function jumpTick(ts){
+ if(jumpPhase!=='hill'&&jumpPhase!=='flight')return;
+ const dt=jumpLast===null?0:Math.min(.08,(ts-jumpLast)/1000);
+ jumpLast=ts;
+ if(jumpPhase==='hill'){
+  // Integrate travel along the actual track; speed comes from
+  // gravitational energy, not an independent animation clock.
+  const steps=Math.max(1,Math.ceil(dt/.003));
+  for(let i=0;i<steps&&jumpPhase==='hill';i++){
+   const step=dt/steps,x=jumpHillX,p=jumpParams();
+   const slope=x<=HILL_BOTTOM
+    ?-15.3*(1-(x-HILL_START)/(HILL_BOTTOM-HILL_START))/(HILL_BOTTOM-HILL_START)
+    :(1.3*(6*((x-HILL_BOTTOM)/1.25)*(1-(x-HILL_BOTTOM)/1.25))
+      +1.25*(3*((x-HILL_BOTTOM)/1.25)**2-2*((x-HILL_BOTTOM)/1.25)))/1.25;
+   const v=Math.sqrt(Math.max(0,2*g*(p.h-hillY(x))));
+   // A small initial acceleration starts the ball from rest.
+   const acceleration=Math.max(0,-g*slope/(1+slope*slope));
+   const dx=(v*step+.5*acceleration*step*step)/Math.sqrt(1+slope*slope);
+   jumpHillX=Math.min(0,x+dx);
+   if(jumpHillX>=0){
+    jumpPhase='flight';jumpClock=0;
+   }
+  }
+ }else{
+  jumpClock+=dt;
+ }
+ if(jumpPhase==='flight'&&jumpClock>=jumpParams().endT){
+  const p=jumpParams();jumpClock=p.endT;jumpPhase='done';jumpStop();
+  $('jumpStatus').textContent=p.success?'Successful landing!':'Missed the landing platform. Try a different starting height or gap.';
+  $('jumpStart').textContent='Try again';jumpRender();return;
+ }
+ jumpRender();jumpFrame=requestAnimationFrame(jumpTick);
+}
+$('jumpStart').onclick=()=>{
+ if(jumpPhase==='hill'||jumpPhase==='flight'){jumpStop();jumpPhase=jumpPhase==='hill'?'pausedHill':'pausedFlight';$('jumpStart').textContent='Resume';return;}
+ if(jumpPhase==='ready'||jumpPhase==='done'){jumpClock=0;jumpHillX=hillStartX(jumpParams().h);jumpPhase='hill';}
+ else if(jumpPhase==='pausedHill')jumpPhase='hill';else jumpPhase='flight';
+ jumpLast=null;$('jumpStart').textContent='Pause';$('jumpStatus').textContent='Moving…';jumpFrame=requestAnimationFrame(jumpTick);
+};
+$('jumpReset').onclick=jumpReset;
+['jumpHill','jumpGap','jumpMass'].forEach(id=>$(id).addEventListener('input',()=>{
+ $('jumpHillVal').textContent=(+$('jumpHill').value).toFixed(2)+' m';
+ $('jumpGapVal').textContent=(+$('jumpGap').value).toFixed(1)+' m';
+ $('jumpMassVal').textContent=$('jumpMass').value+' kg';jumpReset();
+}));
+$('jumpTab').onclick=()=>{$('rampMain').classList.add('hide');$('winchMain').classList.add('hide');$('jumpMain').classList.remove('hide');$('rampTab').setAttribute('aria-selected','false');$('winchTab').setAttribute('aria-selected','false');$('jumpTab').setAttribute('aria-selected','true');};
+$('rampTab').addEventListener('click',()=>{$('jumpMain').classList.add('hide');$('jumpTab').setAttribute('aria-selected','false');jumpStop();});
+$('winchTab').addEventListener('click',()=>{$('jumpMain').classList.add('hide');$('jumpTab').setAttribute('aria-selected','false');jumpStop();});
+jumpRender();
+</script></body></html>
